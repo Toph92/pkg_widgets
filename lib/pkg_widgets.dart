@@ -58,3 +58,48 @@ Widget hSpacer(double pixels) => SizedBox(
 Widget vSpacer(double pixels) => SizedBox(
       height: pixels,
     );
+
+mixin WidgetGetSize<T extends StatefulWidget> on State<T> {
+  final GlobalKey _keySize = GlobalKey();
+  Size? _resultBoxSize;
+  double _width = 0;
+  double _height = 0;
+
+  void initGetSize() {
+    _postFrameCallback();
+    super.initState();
+  }
+
+  Widget sizeBuilder(Widget Function(BuildContext, Size, Key) builder) {
+    return Builder(
+      builder: (context) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth != _width ||
+                constraints.maxHeight != _height) {
+              _width = constraints.maxWidth;
+              _height = constraints.maxHeight;
+              _postFrameCallback();
+            }
+            return builder(context, _resultBoxSize ?? Size.zero, _keySize);
+          },
+        );
+      },
+    );
+  }
+
+  _postFrameCallback() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {
+          _resultBoxSize = _getRedBoxSize(_keySize.currentContext!);
+        });
+      }
+    });
+  }
+
+  Size _getRedBoxSize(BuildContext context) {
+    final box = context.findRenderObject() as RenderBox;
+    return box.size;
+  }
+}
