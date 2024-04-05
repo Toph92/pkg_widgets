@@ -64,13 +64,18 @@ mixin WidgetGetSize<T extends StatefulWidget> on State<T> {
   Size? _resultBoxSize;
   double _width = 0;
   double _height = 0;
+  bool _initDone = false;
 
   void initGetSize() {
     _postFrameCallback();
+    _initDone = true;
     super.initState();
   }
 
-  Widget sizeBuilder(Widget Function(BuildContext, Size, Key) builder) {
+  Widget SizeBuilder(
+      {required Widget Function(BuildContext, Size, Key) builder}) {
+    assert(_initDone,
+        "You must call initGetSize() in initState() before using sizeBuilder()");
     return Builder(
       builder: (context) {
         return LayoutBuilder(
@@ -91,6 +96,8 @@ mixin WidgetGetSize<T extends StatefulWidget> on State<T> {
   _postFrameCallback() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
+        assert(
+            _keySize.currentContext != null, "check if key is used in parent");
         setState(() {
           _resultBoxSize = _getRedBoxSize(_keySize.currentContext!);
         });
