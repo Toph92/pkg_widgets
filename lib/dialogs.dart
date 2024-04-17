@@ -15,6 +15,7 @@ class DialogCust<T> {
   DialogType type = DialogType.none;
   bool shuffleButtons;
   bool withBackgroundColor;
+  bool blurBackground;
 
   //
 
@@ -29,6 +30,7 @@ class DialogCust<T> {
     this.tag,
     this.shuffleButtons = false,
     this.withBackgroundColor = false,
+    this.blurBackground = false,
   }) {
     assert(this.message is String || this.message is Widget);
     assert(this.altMessage is String ||
@@ -63,8 +65,12 @@ class DialogCust<T> {
           scale: curve,
           child: BackdropFilter(
               filter: ImageFilter.blur(
-                  sigmaX: type.dimissible == true ? 0 : 3,
-                  sigmaY: type.dimissible == true ? 0 : 3),
+                  sigmaX: type.dimissible == true && blurBackground == false
+                      ? 0
+                      : 3,
+                  sigmaY: type.dimissible == true && blurBackground == false
+                      ? 0
+                      : 3),
               child: NotificationListener(
                 onNotification: (notification) {
                   if (notification is DialogNotification) {
