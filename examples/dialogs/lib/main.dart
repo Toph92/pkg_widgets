@@ -68,27 +68,27 @@ class _MyHomePageState extends State<MyHomePage> with WidgetGetSize {
               // elevated button
               onPressed: () async {
                 bool? bResult = await DialogCust<bool>(
-                        context: context,
-                        message:
-                            'Ceci est un message d\'information pour notifier l\'utilisateur.',
-                        altMessage: const Row(
-                          children: [
-                            Icon(
-                              Icons.info_outlined,
-                              color: Colors.blue,
-                              size: 20,
-                            ),
-                            Flexible(
-                              child: Text(
-                                "C'est beau de rêver, mais il faut se réveiller pour que les rêves se réalisent",
-                                style: TextStyle(color: Colors.grey),
-                                softWrap: true,
-                              ),
-                            ),
-                          ],
+                  context: context,
+                  message:
+                      'Ceci est un message d\'information pour notifier l\'utilisateur.',
+                  altMessage: const Row(
+                    children: [
+                      Icon(
+                        Icons.info_outlined,
+                        color: Colors.blue,
+                        size: 20,
+                      ),
+                      Flexible(
+                        child: Text(
+                          "C'est beau de rêver, mais il faut se réveiller pour que les rêves se réalisent",
+                          style: TextStyle(color: Colors.grey),
+                          softWrap: true,
                         ),
-                        tag: 'diag1')
-                    .ok();
+                      ),
+                    ],
+                  ),
+                  tag: 'diag1',
+                ).ok();
                 switch (bResult) {
                   case true:
                     debugPrint("return OK");

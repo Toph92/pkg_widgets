@@ -1,0 +1,105 @@
+{
+    // Utilisez IntelliSense pour en savoir plus sur les attributs possibles.
+    // Pointez pour afficher la description des attributs existants.
+    // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "pkg_widgets",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "pkg_widgets (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "pkg_widgets (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "chips",
+            "cwd": "examples/chips",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "chips (profile mode)",
+            "cwd": "examples/chips",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "chips (release mode)",
+            "cwd": "examples/chips",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "dialogs",
+            "cwd": "examples/dialogs",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "dialogs (profile mode)",
+            "cwd": "examples/dialogs",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "dialogs (release mode)",
+            "cwd": "examples/dialogs",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "getsize",
+            "cwd": "examples/getsize",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "getsize (profile mode)",
+            "cwd": "examples/getsize",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "getsize (release mode)",
+            "cwd": "examples/getsize",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "text_completion",
+            "cwd": "examples/text_completion",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "text_completion (profile mode)",
+            "cwd": "examples/text_completion",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "text_completion (release mode)",
+            "cwd": "examples/text_completion",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
