@@ -147,7 +147,7 @@ class DialogCust<T> {
 }
 
 class AlertDialogCust extends StatefulWidget {
-  AlertDialogCust({
+  const AlertDialogCust({
     super.key,
     required this.context,
     required this.message,
@@ -162,10 +162,10 @@ class AlertDialogCust extends StatefulWidget {
   /// String or Widget type message
   final dynamic message;
   final dynamic altMessage;
-  String? tag;
+  final String? tag;
   final DialogType type;
   final bool shuffleButtons;
-  List<DialogButton> actionButtons;
+  final List<DialogButton> actionButtons;
 
   @override
   State<AlertDialogCust> createState() => _AlertDialogCustState();

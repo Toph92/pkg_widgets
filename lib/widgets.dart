@@ -72,7 +72,7 @@ mixin WidgetGetSize<T extends StatefulWidget> on State<T> {
     super.initState();
   }
 
-  Widget SizeBuilder(
+  Widget sizeBuilder(
       {required Widget Function(BuildContext, Size, Key) builder}) {
     assert(_initDone,
         "You must call initGetSize() in initState() before using sizeBuilder()");

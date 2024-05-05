@@ -72,14 +72,14 @@ class _MyHomePageState extends State<MyHomePage> {
               child: NotificationListener(
                 onNotification: (notification) {
                   switch (notification.runtimeType) {
-                    case ChipUpdateNotification:
+                    case ChipUpdateNotification _:
                       /* debugPrint(
                           "Notif: ${(notification as ChipUpdateNotification).value}"); */
                       debugPrint("value=${userControler.textValue}");
                       //userControler.textValue = (notification).value;
                       setState(() {});
                       break;
-                    case ChipDeleteNotification:
+                    case ChipDeleteNotification _:
                       debugPrint("Delete");
                       //utilisateur.visible = false;
 
@@ -125,12 +125,12 @@ class _MyHomePageState extends State<MyHomePage> {
             NotificationListener(
                 onNotification: (notification) {
                   switch (notification.runtimeType) {
-                    case ChipUpdateNotification:
+                    case ChipUpdateNotification _:
                       /*debugPrint(
                           "Notif: ${(notification as ChipUpdateNotification).value}");*/
                       debugPrint("value=${dateControler.dateValue}");
                       break;
-                    case ChipDeleteNotification:
+                    case ChipDeleteNotification _:
                       debugPrint("Delete");
                       //dateDebut.visible = false;
                       break;

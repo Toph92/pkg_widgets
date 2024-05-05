@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage>
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(widget.title),
         ),
-        body: Center(child: SizeBuilder(builder: (context, size,
+        body: Center(child: sizeBuilder(builder: (context, size,
                 keyMain) // here i get the size of the container (stack)
             {
           double border = 16;
