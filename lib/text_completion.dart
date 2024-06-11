@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'text_completion_controler.dart';
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class TextCompletion extends StatefulWidget {
   const TextCompletion({
@@ -151,7 +152,7 @@ class _TextCompletionState extends State<TextCompletion> {
                                       isDense: false,
                                       suffixIcon: widget.controler.txtControler
                                                   .text.isNotEmpty &&
-                                              (isDesktop()
+                                              (_isDesktop()
                                                   ? _hovering
                                                   : widget
                                                       .controler
@@ -454,5 +455,11 @@ class _TextCompletionState extends State<TextCompletion> {
     );
     // Add the OverlayEntry to the Overlay.
     Overlay.of(context, debugRequiredFor: widget).insert(overlayEntry!);
+  }
+
+  bool _isDesktop() {
+    if (kIsWeb) return false;
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) return true;
+    return false;
   }
 }

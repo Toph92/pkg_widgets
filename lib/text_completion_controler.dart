@@ -314,9 +314,3 @@ extension RemoveAccentsExtension on String {
     return keywords.every((keyword) => contains(keyword));
   }
 }
-
-bool isDesktop() {
-  if (kIsWeb) return false;
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) return true;
-  return false;
-}
