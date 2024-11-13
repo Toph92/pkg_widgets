@@ -129,8 +129,8 @@ class DialogCust<T> {
   Future<T?> removeCancel(
       {String yesLabel = 'Supprimer', String noLabel = 'Annuler'}) async {
     actionButtons = [
-      DialogButton(label: yesLabel, value: true),
       DialogButton(label: noLabel, value: false),
+      DialogButton(label: yesLabel, value: true),
     ];
     assert(message is String && message.endsWith('?') == true);
     type = DialogType.remove;
