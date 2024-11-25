@@ -33,7 +33,11 @@ class TextCompletionControler<T extends SearchEntry> {
     // sinon pas de refresh si sélection de la même valeur dans la liste. */
   }
 
-  Function(String value)? onChangeValue;
+  // Valeur saisie après traitement
+  Function(String value)? onInputValueChangedProcessed;
+
+  // Valeur saisie avant traitement
+  Function(String value)? onInputValueChanged;
 
   set listWidth(double value) {
     listWidthNotifier.value = value;
@@ -60,18 +64,18 @@ class TextCompletionControler<T extends SearchEntry> {
   // bof, j'étais parti sur Function(T value)? onUpdate; mais cela ne marche pas au niveau du call()
   // Il veut absolument déclarer le type avant la function.
   // et lors de l'appel un <Object> fait l'affaire. Ca sent le bug ou moi qui merde quelque part :(
-  TextCompletionControler({
-    required this.dataSource,
-    this.fuzzySearch = true,
-    this.onSelected,
-    String? initialValue,
-    double? initialListWidth,
-    this.initialListHeight,
-    this.minWidthList,
-    this.maxWidthList,
-    this.offsetListWidth = 0,
-    this.onChangeValue,
-  }) {
+  TextCompletionControler(
+      {required this.dataSource,
+      this.fuzzySearch = true,
+      this.onSelected,
+      String? initialValue,
+      double? initialListWidth,
+      this.initialListHeight,
+      this.minWidthList,
+      this.maxWidthList,
+      this.offsetListWidth = 0,
+      this.onInputValueChangedProcessed,
+      this.onInputValueChanged}) {
     txtFieldNotifier.value = initialValue;
     focusNodeTextField.addListener(onFocused);
 //    listWidthValue.value = offsetListWidth;

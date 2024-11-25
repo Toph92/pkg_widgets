@@ -68,9 +68,19 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     completionCtrl = TextCompletionControler<User>(
-      onChangeValue: (value) {
+      /*   onChangeValue: (value) {
         //print("Value=$value");
+        if (value.length == 3 && value.substring(0, 3).toUpperCase() == 'DES') {
+          users.add(User(lastName: 'DESBOIS', firstName: 'Isabelle'));
+        }
+      }, */
+      onInputValueChanged: (value) {
+        //print("Value=$value");
+        if (value.length == 3 && value.substring(0, 3).toUpperCase() == 'DES') {
+          users.add(User(lastName: 'DESBOIS', firstName: 'Isabelle'));
+        }
       },
+
       initialListHeight: 150,
       //offsetListWidth: -40,
       minWidthList: 200,
@@ -79,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
       onSelected: <Object>(user) {
         user = user as User;
         //print(user.firstName);
-        completionCtrl.value = user.lastName;
+        completionCtrl.value = "${user.lastName} ${user.firstName}";
       },
     );
     completionCtrl.focusNodeTextField.addListener(refresh);
@@ -95,7 +105,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void refresh() {
-    //print("Refresh");
     if (mounted) setState(() {});
   }
 
@@ -170,7 +179,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                   }
                                   return null;
                                 },
-
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: Colors.grey.shade100,

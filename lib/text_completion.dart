@@ -180,6 +180,9 @@ class _TextCompletionState extends State<TextCompletion> {
                                           : null),
                                   controller: widget.controler.txtControler,
                                   onChanged: (value) {
+                                    widget.controler.onInputValueChanged?.call(
+                                        widget.controler.txtControler.text);
+
                                     RenderBox renderBox =
                                         context.findRenderObject() as RenderBox;
                                     heightTextField = renderBox.size.height;
@@ -266,7 +269,7 @@ class _TextCompletionState extends State<TextCompletion> {
         hintMessage = null;
       }
     }
-    widget.controler.onChangeValue?.call(value);
+    widget.controler.onInputValueChangedProcessed?.call(value);
     if (mounted) {
       setState(() {});
     }
