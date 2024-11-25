@@ -215,30 +215,27 @@ class _TextCompletionState extends State<TextCompletion> {
               Positioned(
                   bottom: 8,
                   right: 8,
-                  child: Container(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 2),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            const Icon(
-                              Icons.info_outline_rounded,
-                              color: Colors.blue,
-                              size: 16,
-                            ),
-                            const SizedBox(
-                              width: 2,
-                            ),
-                            Text(
-                              hintMessage!,
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: Theme.of(context).primaryColor),
-                            ),
-                          ],
-                        ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: FittedBox(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const Icon(
+                            Icons.info_outline_rounded,
+                            color: Colors.blue,
+                            size: 16,
+                          ),
+                          const SizedBox(
+                            width: 2,
+                          ),
+                          Text(
+                            hintMessage!,
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Theme.of(context).primaryColor),
+                          ),
+                        ],
                       ),
                     ),
                   )),

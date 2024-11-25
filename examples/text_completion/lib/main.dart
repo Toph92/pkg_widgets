@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //offsetListWidth: -40,
       minWidthList: 200,
       //maxWidthList: 400,
-      dataSource: users,
+      dataSource: [], //users,
       onSelected: <Object>(user) {
         user = user as User;
         //print(user.firstName);
@@ -141,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     Expanded(
                       child: Container(
-                        color: Colors.red,
+                        color: Colors.grey,
                       ),
                     ),
                     Expanded(
@@ -262,7 +262,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     Expanded(
                         flex: 1,
-                        child: Container(width: 20, color: Colors.green))
+                        child: Container(width: 20, color: Colors.grey)),
                   ],
                 ),
               ),
