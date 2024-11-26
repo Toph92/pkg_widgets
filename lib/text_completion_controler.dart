@@ -44,6 +44,8 @@ class CacheManager<T> {
     for (CacheItem item in cache) {
       result.addAll(item.value as List<T>);
     }
+    // uniq in result
+    result = result.toSet().toList();
     return result;
   }
 }
