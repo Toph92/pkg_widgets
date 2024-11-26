@@ -171,7 +171,7 @@ class TextCompletionControler<T extends SearchEntry> {
 
     dataSourceFiltered = null;
     if (onRequestUpdateDataSource != null) {
-      dataSource ??= cacheManager.get(_arCriteria!.join(''));
+      dataSource = cacheManager.get(_arCriteria!.join(''));
 
       /*String key = arCriteria!.join('');
        for (CacheItem element in dataSourceCache!) {
