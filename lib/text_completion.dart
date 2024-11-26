@@ -152,7 +152,7 @@ class _TextCompletionState extends State<TextCompletion> {
                                   decoration: widget.decoration.copyWith(
                                       isDense: false,
                                       suffixIcon: widget.controler
-                                                  .dataSourceFiltered2 ==
+                                                  .dataSourceFiltered ==
                                               null
                                           ? Transform.scale(
                                               scale: 0.7,
@@ -320,7 +320,7 @@ class _TextCompletionState extends State<TextCompletion> {
 
   Future<void> udpateResults() async {
     await widget.controler.updateResultset();
-    if (widget.controler.dataSourceFiltered2!.isNotEmpty) {
+    if (widget.controler.dataSourceFiltered!.isNotEmpty) {
       hintMessage = null;
       showPopup(key: textKey);
     } else {
@@ -402,9 +402,9 @@ class _TextCompletionState extends State<TextCompletion> {
                           padding: const EdgeInsets.all(4.0),
                           child: ListView.separated(
                             //shrinkWrap: true,
-                            itemCount: widget.controler.dataSourceFiltered2 !=
+                            itemCount: widget.controler.dataSourceFiltered !=
                                     null
-                                ? widget.controler.dataSourceFiltered2!.length
+                                ? widget.controler.dataSourceFiltered!.length
                                 : 0,
                             separatorBuilder: (context, index) => const Divider(
                               height: 3,
@@ -426,7 +426,7 @@ class _TextCompletionState extends State<TextCompletion> {
                                     onTap: () {
                                       widget.controler.onSelected?.call(widget
                                           .controler
-                                          .dataSourceFiltered2![index]);
+                                          .dataSourceFiltered![index]);
                                       removeHighlightOverlay();
                                       widget.controler.selectedFromList = true;
                                       hintMessage = null;
@@ -434,14 +434,14 @@ class _TextCompletionState extends State<TextCompletion> {
                                     },
                                     leading: widget
                                             .controler
-                                            .dataSourceFiltered2![index]
+                                            .dataSourceFiltered![index]
                                             .fuzzySearchResult
                                         ? Icon(
                                             Icons.help,
                                             size: 24,
                                             // les ravages de l'alcool :
                                             color: Colors.blue.withOpacity(
-                                                (opa = ((widget.controler.dataSourceFiltered2![
+                                                (opa = ((widget.controler.dataSourceFiltered![
                                                                         index])
                                                                     .fuzzyScore ??
                                                                 1.0) *
@@ -452,7 +452,7 @@ class _TextCompletionState extends State<TextCompletion> {
                                           )
                                         : const SizedBox(),
                                     title: widget
-                                        .controler.dataSourceFiltered2![index]
+                                        .controler.dataSourceFiltered![index]
                                         .title(widget.controler)),
                               );
                             },
@@ -462,13 +462,13 @@ class _TextCompletionState extends State<TextCompletion> {
                       const Divider(
                         height: 1,
                       ),
-                      if (widget.controler.dataSourceFiltered2 != null)
+                      if (widget.controler.dataSourceFiltered != null)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
                           child: Row(
                             children: [
                               Text(
-                                "${widget.controler.dataSourceFiltered2!.length}",
+                                "${widget.controler.dataSourceFiltered!.length}",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w500),
                               ),
@@ -476,14 +476,14 @@ class _TextCompletionState extends State<TextCompletion> {
                                 width: 4,
                               ),
                               Text(
-                                "résultat${widget.controler.dataSourceFiltered2!.length > 1 ? 's' : ''}",
+                                "résultat${widget.controler.dataSourceFiltered!.length > 1 ? 's' : ''}",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w400,
                                     color: Colors.grey),
                               ),
-                              if (widget.controler.dataSourceFiltered2!
+                              if (widget.controler.dataSourceFiltered!
                                       .isNotEmpty &&
-                                  widget.controler.dataSourceFiltered2!.first
+                                  widget.controler.dataSourceFiltered!.first
                                       .fuzzySearchResult) ...[
                                 const SizedBox(
                                   width: 10,

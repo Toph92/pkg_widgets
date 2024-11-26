@@ -8,6 +8,43 @@ class CacheItem<T> {
   final List<T> value;
 }
 
+class CacheManager<T> {
+  CacheManager({this.maxSize = 100}) {
+    assert(maxSize > 0);
+  }
+
+  int maxSize;
+  List<CacheItem> cache = [];
+
+  void add(CacheItem item) {
+    cache.add(item);
+    if (cache.length > maxSize) {
+      cache.removeAt(0);
+    }
+  }
+
+  List<T>? get<T>(String key) {
+    for (CacheItem item in cache) {
+      if (item.key == key) {
+        return item.value as List<T>;
+      }
+    }
+    return null;
+  }
+
+  bool isNotEmpty() {
+    return cache.isNotEmpty;
+  }
+
+  List<T> get fullContent {
+    List<T> result = [];
+    for (CacheItem item in cache) {
+      result.addAll(item.value as List<T>);
+    }
+    return result;
+  }
+}
+
 class TextCompletionControler<T extends SearchEntry> {
   TextCompletionControler({
     this.dataSource,
@@ -34,10 +71,9 @@ class TextCompletionControler<T extends SearchEntry> {
   }
 
   List<T>? dataSource;
-  List<CacheItem<T>>?
-      dataSourceCache; // actif que si onRequestUpdateDataSource est défini
+  CacheManager<T> cacheManager = CacheManager(maxSize: 100);
   int nbBestFuzzy = 3; // nombre de résultats flous à afficher
-  List<String>? arCriteria;
+  List<String>? _arCriteria;
   bool fuzzySearch;
   bool selectedFromList = false; // true if selected in list
   TextEditingController txtControler = TextEditingController();
@@ -68,7 +104,7 @@ class TextCompletionControler<T extends SearchEntry> {
   Future<List<T>?> Function(List<String>? arCriteria)?
       onRequestUpdateDataSource;
 
-  List<T>? dataSourceFiltered2 =
+  List<T>? dataSourceFiltered =
       []; // null: runing search, []: no result, else: result
 
   set listWidth(double value) {
@@ -127,56 +163,64 @@ class TextCompletionControler<T extends SearchEntry> {
         .split(' ');
     chunks.removeWhere((element) => element == ' ' || element == '');
     chunks = Set<String>.from(chunks).toList();
-    arCriteria = chunks;
+    _arCriteria = chunks;
   }
 
   Future<void> updateResultset() async {
     // final stopwatch = Stopwatch()..start();
 
-    dataSourceFiltered2 = null;
+    dataSourceFiltered = null;
     if (onRequestUpdateDataSource != null) {
-      dataSourceCache ??= [];
-      String key = arCriteria!.join('');
-      for (CacheItem element in dataSourceCache!) {
+      dataSource ??= cacheManager.get(_arCriteria!.join(''));
+
+      /*String key = arCriteria!.join('');
+       for (CacheItem element in dataSourceCache!) {
         if (element.key == key) {
-          dataSourceFiltered2 = element.value as List<T>;
+          dataSourceFiltered = element.value as List<T>;
           return;
         }
-      }
-      dataSource = await onRequestUpdateDataSource!(arCriteria);
+      } */
+      dataSource ??= await onRequestUpdateDataSource!(_arCriteria);
       if (dataSource != null && dataSource!.isNotEmpty) {
-        dataSourceCache!
+        cacheManager
+            .add(CacheItem<T>(key: _arCriteria!.join(''), value: dataSource!));
+        /* dataSourceCache!
             .add(CacheItem<T>(key: arCriteria!.join(''), value: dataSource!));
         if (dataSourceCache!.length > 100) {
           // 100 éléments max en cache, peut-être un peu grand surtout s'il y un bug quelque part :)
           dataSourceCache!.removeAt(0);
-        }
+        } */
       }
     }
-    assert(dataSource != null);
+    assert(dataSource != null); // si null , c'est qu'il y a un problème
 
-    dataSourceFiltered2 = dataSource!
-        .where((element) => ((element).sText).containsAll(arCriteria ?? []))
+    dataSourceFiltered = dataSource!
+        .where((element) => ((element).sText).containsAll(_arCriteria ?? []))
         .toList();
-    dataSourceFiltered2?.forEach((element) {
+    dataSourceFiltered?.forEach((element) {
       (element).fuzzySearchResult = false;
     });
 
-    if (dataSourceFiltered2!.isEmpty && fuzzySearch) {
+    if (dataSourceFiltered!.isEmpty &&
+        fuzzySearch &&
+        cacheManager.isNotEmpty()) {
       List<T>? bestUsers = getNearestEntries(
-          dataSourceCache != null ? dataSourceCache!.last.value : dataSource);
-      dataSourceFiltered2!.addAll(bestUsers);
+          arCriteria: _arCriteria!,
+          dataSource: cacheManager.isNotEmpty()
+              ? cacheManager.fullContent
+              : dataSource!);
+
+      dataSourceFiltered!.addAll(bestUsers);
 
       //print('Best=$bestUser');
     }
   }
 
-  List<T> getNearestEntries(List<T>? dataSource) {
-    if (dataSource == null) return [];
-
+  List<T> getNearestEntries(
+      {required List<String> arCriteria, required List<T> dataSource}) {
     List<T> bestFuzzySearch = [];
 
-    SearchEntry entry = SearchEntry(sText: arCriteria!.join(''));
+    SearchEntry entry = SearchEntry(sText: arCriteria.join(''));
 
     int occu = 0;
 
@@ -249,21 +293,21 @@ class TextCompletionControler<T extends SearchEntry> {
   /// return array of Text() to fill Row()
   List<Widget> hightLightText(String source) {
     List<Widget> results = [];
-    arCriteria ??= [];
+    _arCriteria ??= [];
 
-    List<String> arTmp = splitText(source, arCriteria!);
-    arCriteria = arCriteria!
+    List<String> arTmp = splitText(source, _arCriteria!);
+    _arCriteria = _arCriteria!
         .map((element) => element.removeAccents().toUpperCase())
         .toList();
 
     for (var element in arTmp) {
-      if (arCriteria!.contains(element.removeAccents().toUpperCase())) {
+      if (_arCriteria!.contains(element.removeAccents().toUpperCase())) {
         results.add(Text(
           element,
           style: TextStyle(
               fontWeight: FontWeight.w500,
               backgroundColor: getBgColor(
-                  arCriteria!.indexOf(element.removeAccents().toUpperCase()))),
+                  _arCriteria!.indexOf(element.removeAccents().toUpperCase()))),
         ));
       } else {
         results.add(Text(
