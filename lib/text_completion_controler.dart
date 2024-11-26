@@ -6,6 +6,17 @@ class CacheItem<T> {
   CacheItem({required this.key, required this.value});
   final String key;
   final List<T> value;
+
+  // add == operator and hashCode to compare CacheItem
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! CacheItem) return false;
+    return key == other.key;
+  }
+
+  @override
+  int get hashCode => key.hashCode;
 }
 
 class CacheManager<T> {
