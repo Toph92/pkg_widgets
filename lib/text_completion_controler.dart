@@ -17,13 +17,16 @@ class CacheManager<T> {
   List<CacheItem> cache = [];
 
   void add(CacheItem item) {
+    if (get(item.key) != null) {
+      return;
+    }
     cache.add(item);
     if (cache.length > maxSize) {
       cache.removeAt(0);
     }
   }
 
-  List<T>? get<T>(String key) {
+  List<T>? get(String key) {
     for (CacheItem item in cache) {
       if (item.key == key) {
         return item.value as List<T>;
