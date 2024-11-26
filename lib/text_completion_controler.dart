@@ -65,7 +65,8 @@ class TextCompletionControler<T extends SearchEntry> {
   Function(String value)? onInputValueChanged;
 
   // callback to update data from parent
-  Future<List<T>> Function(List<String>? arCriteria)? onRequestUpdateDataSource;
+  Future<List<T>?> Function(List<String>? arCriteria)?
+      onRequestUpdateDataSource;
 
   List<T>? dataSourceFiltered2 =
       []; // null: runing search, []: no result, else: result
