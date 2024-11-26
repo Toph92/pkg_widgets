@@ -262,33 +262,6 @@ class _TextCompletionState extends State<TextCompletion> {
     );
   }
 
-  /* void onChangedTxtCompletion(String value) {
-    widget.controler.selectedFromList = false;
-    if (value.trim().length >= widget.minCharacterNeeded) {
-      widget.controler.updateCriteria(value);
-      if (widget.controler.dataSourceFiltered2!.isNotEmpty) {
-        hintMessage = null;
-        showPopup(key: textKey);
-      } else {
-        hintMessage = "Aucun résultat";
-        removeHighlightOverlay();
-      }
-    } else {
-      removeHighlightOverlay();
-      if (widget.controler.txtControler.text.isNotEmpty &&
-          widget.minCharacterNeeded > 0) {
-        hintMessage =
-            "${widget.minCharacterNeeded} caractère${widget.minCharacterNeeded > 1 ? 's' : ''} min.";
-      } else {
-        hintMessage = null;
-      }
-    }
-    widget.controler.onInputValueChangedProcessed?.call(value);
-    if (mounted) {
-      setState(() {});
-    }
-  } */
-
   void onChangedTxtCompletion(String value) {
     widget.controler.selectedFromList = false;
     if (value.trim().length >= widget.minCharacterNeeded) {
@@ -495,7 +468,21 @@ class _TextCompletionState extends State<TextCompletion> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: Colors.grey),
-                                )
+                                ),
+                              ],
+                              const Expanded(child: SizedBox()),
+                              if (widget.controler.durationLastRequest !=
+                                      null &&
+                                  widget.controler.durationLastRequest!
+                                          .inMilliseconds >
+                                      20 &&
+                                  Platform.isAndroid == false &&
+                                  Platform.isIOS == false) ...[
+                                Text(
+                                  "${widget.controler.durationLastRequest!.inMilliseconds} ms",
+                                  style: const TextStyle(
+                                      color: Colors.grey, fontSize: 10),
+                                ),
                               ]
                             ],
                           ),

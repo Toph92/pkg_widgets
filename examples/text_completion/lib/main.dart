@@ -88,6 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }, */
       onRequestUpdateDataSource: (arCriteria) async {
+        await Future.delayed(const Duration(seconds: 1));
         return <User>[
           User(firstName: 'Christophe', lastName: 'DESBOIS'),
           User(firstName: 'Maxime', lastName: 'DESBOIS'),

@@ -143,6 +143,8 @@ class TextCompletionControler<T extends SearchEntry> {
   ValueNotifier<double?> listWidthNotifier = ValueNotifier(null);
   ValueNotifier<bool> closeNotifier = ValueNotifier(false);
 
+  Duration? durationLastRequest;
+
   /// return selected item in [value]
   Function<T>(dynamic value)? onSelected;
   // bof, j'étais parti sur Function(T value)? onUpdate; mais cela ne marche pas au niveau du call()
@@ -183,8 +185,8 @@ class TextCompletionControler<T extends SearchEntry> {
   }
 
   Future<void> updateResultset() async {
-    // final stopwatch = Stopwatch()..start();
-
+    final stopwatch = Stopwatch()..start();
+    durationLastRequest = null;
     dataSourceFiltered = null;
     if (onRequestUpdateDataSource != null) {
       dataSource = cacheManager.get(_arCriteria!.join(''));
@@ -214,6 +216,7 @@ class TextCompletionControler<T extends SearchEntry> {
 
       dataSourceFiltered!.addAll(bestUsers);
     }
+    durationLastRequest = stopwatch.elapsed;
   }
 
   List<T> getNearestEntries(
