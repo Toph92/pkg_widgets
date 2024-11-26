@@ -188,6 +188,9 @@ class _TextCompletionState extends State<TextCompletion> {
                                                         ?.validate();
                                                     hintMessage = null;
                                                     removeHighlightOverlay();
+                                                    widget.controler
+                                                        .focusNodeTextField
+                                                        .requestFocus();
 
                                                     if (mounted) {
                                                       _refresh();
