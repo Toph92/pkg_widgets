@@ -6,6 +6,13 @@ import 'package:flutter_lorem/flutter_lorem.dart';
 import 'package:pkg_widgets/text_completion.dart';
 import 'package:pkg_widgets/text_completion_controler.dart';
 
+Uri apiSrv = Uri(
+  scheme: 'https',
+  host: 'appweb-dev.alliumfr.corp.priv',
+  port: 443,
+  path: '/SecurePhoneAPI/api/v1/',
+);
+
 void main() {
   runApp(const MyApp());
 }
@@ -74,18 +81,25 @@ class _MyHomePageState extends State<MyHomePage> {
           users.add(User(lastName: 'DESBOIS', firstName: 'Isabelle'));
         }
       }, */
-      onInputValueChanged: (value) {
+      /* onInputValueChanged: (value) {
         //print("Value=$value");
         if (value.length == 3 && value.substring(0, 3).toUpperCase() == 'DES') {
           users.add(User(lastName: 'DESBOIS', firstName: 'Isabelle'));
         }
+      }, */
+      onRequestUpdateDataSource: (arCriteria) async {
+        return <User>[
+          User(firstName: 'Christophe', lastName: 'DESBOIS'),
+          User(firstName: 'Maxime', lastName: 'DESBOIS'),
+        ];
       },
+      //dataSource: users,
 
       initialListHeight: 150,
       //offsetListWidth: -40,
       minWidthList: 200,
       //maxWidthList: 400,
-      dataSource: [], //users,
+
       onSelected: <Object>(user) {
         user = user as User;
         //print(user.firstName);
@@ -238,7 +252,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           ElevatedButton(
                               onPressed: () {
-                                completionCtrl.dataSource.addAll(
+                                completionCtrl.dataSource?.addAll(
                                     List<User>.generate(
                                         1000,
                                         (index) => User(
@@ -311,6 +325,19 @@ class User extends SearchEntry {
   String toString() {
     return "$lastName $firstName";
   }
+
+  // add == opérator
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is User &&
+        other.firstName == firstName &&
+        other.lastName == lastName;
+  }
+
+  @override
+  int get hashCode => firstName.hashCode ^ lastName.hashCode;
 
   @override
   Widget title(TextCompletionControler controler) {

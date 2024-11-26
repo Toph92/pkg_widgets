@@ -1,16 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:io';
+//import 'package:flutter/foundation.dart' show kIsWeb;
+//import 'dart:io';
+
+class CacheItem<T> {
+  CacheItem({required this.key, required this.value});
+  final String key;
+  final List<T> value;
+}
 
 class TextCompletionControler<T extends SearchEntry> {
-  List<T> dataSource = [];
-  List<T>?
-      cacheDataSourceFiltered; // sans ce cache, c'est un peu la misère coté perfs. Pour mémo: pour une recherche sur 7000 contacts (nom et prénoms),
-  // SQLite: c'est 4 ms !
-  // mySQSL: 15 ms
-  // en mémoire c'est 1ms (4 ms avec 20000 contacts) à condition de supprimer les accents et majuscule au chargement.
-  // quand à la recherche floue: 50 ms pour 20000 contacts
-  List<T>? bestFuzzySearch;
+  TextCompletionControler({
+    this.dataSource,
+    this.onRequestUpdateDataSource,
+    this.fuzzySearch = true,
+    this.onSelected,
+    String? initialValue,
+    double? initialListWidth,
+    this.initialListHeight,
+    this.minWidthList,
+    this.maxWidthList,
+    this.offsetListWidth = 0,
+    this.onInputValueChangedProcessed,
+    this.onInputValueChanged,
+  }) {
+    assert(
+        (dataSource == null && onRequestUpdateDataSource != null) ||
+            (dataSource != null && onRequestUpdateDataSource == null),
+        "Cannot have both dataSource and onRequestUpdateDataSource");
+    assert(dataSource != null || onRequestUpdateDataSource != null,
+        "You must provide a dataSource or a onRequestUpdateDataSource function");
+    txtFieldNotifier.value = initialValue;
+    focusNodeTextField.addListener(onFocused);
+  }
+
+  List<T>? dataSource;
+  List<CacheItem<T>>?
+      dataSourceCache; // actif que si onRequestUpdateDataSource est défini
   int nbBestFuzzy = 3; // nombre de résultats flous à afficher
   List<String>? arCriteria;
   bool fuzzySearch;
@@ -39,6 +64,12 @@ class TextCompletionControler<T extends SearchEntry> {
   // Valeur saisie avant traitement
   Function(String value)? onInputValueChanged;
 
+  // callback to update data from parent
+  Future<List<T>> Function(List<String>? arCriteria)? onRequestUpdateDataSource;
+
+  List<T>? dataSourceFiltered2 =
+      []; // null: runing search, []: no result, else: result
+
   set listWidth(double value) {
     listWidthNotifier.value = value;
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
@@ -64,22 +95,6 @@ class TextCompletionControler<T extends SearchEntry> {
   // bof, j'étais parti sur Function(T value)? onUpdate; mais cela ne marche pas au niveau du call()
   // Il veut absolument déclarer le type avant la function.
   // et lors de l'appel un <Object> fait l'affaire. Ca sent le bug ou moi qui merde quelque part :(
-  TextCompletionControler(
-      {required this.dataSource,
-      this.fuzzySearch = true,
-      this.onSelected,
-      String? initialValue,
-      double? initialListWidth,
-      this.initialListHeight,
-      this.minWidthList,
-      this.maxWidthList,
-      this.offsetListWidth = 0,
-      this.onInputValueChangedProcessed,
-      this.onInputValueChanged}) {
-    txtFieldNotifier.value = initialValue;
-    focusNodeTextField.addListener(onFocused);
-//    listWidthValue.value = offsetListWidth;
-  }
 
   onFocused() {
     if (focusNodeTextField.hasFocus == false) {
@@ -111,36 +126,58 @@ class TextCompletionControler<T extends SearchEntry> {
         .split(' ');
     chunks.removeWhere((element) => element == ' ' || element == '');
     chunks = Set<String>.from(chunks).toList();
-    cacheDataSourceFiltered = null;
-    bestFuzzySearch = null;
     arCriteria = chunks;
   }
 
-  List<T>? get dataSourceFiltered {
+  Future<void> updateResultset() async {
     // final stopwatch = Stopwatch()..start();
-    if (cacheDataSourceFiltered == null) {
-      cacheDataSourceFiltered = dataSource
-          .where((element) => ((element).sText).containsAll(arCriteria ?? []))
-          .toList();
-      cacheDataSourceFiltered?.forEach((element) {
-        (element).fuzzySearch = false;
-      });
+
+    dataSourceFiltered2 = null;
+    if (onRequestUpdateDataSource != null) {
+      dataSourceCache ??= [];
+      String key = arCriteria!.join('');
+      for (CacheItem element in dataSourceCache!) {
+        if (element.key == key) {
+          dataSourceFiltered2 = element.value as List<T>;
+          return;
+        }
+      }
+      dataSource = await onRequestUpdateDataSource!(arCriteria);
+      await Future.delayed(const Duration(milliseconds: 1000));
+      if (dataSource != null && dataSource!.isNotEmpty) {
+        dataSourceCache!
+            .add(CacheItem<T>(key: arCriteria!.join(''), value: dataSource!));
+        if (dataSourceCache!.length > 100) {
+          // 100 éléments max en cache, peut-être un peu grand surtout s'il y un bug quelque part :)
+          dataSourceCache!.removeAt(0);
+        }
+      }
     }
-    if (cacheDataSourceFiltered!.isEmpty && fuzzySearch) {
-      List<T>? bestUsers = getNearestEntries() as List<T>;
-      cacheDataSourceFiltered!.addAll(bestUsers);
+    assert(dataSource != null);
+
+    dataSourceFiltered2 = dataSource!
+        .where((element) => ((element).sText).containsAll(arCriteria ?? []))
+        .toList();
+    dataSourceFiltered2?.forEach((element) {
+      (element).fuzzySearchResult = false;
+    });
+
+    if (dataSourceFiltered2!.isEmpty && fuzzySearch) {
+      List<T>? bestUsers = getNearestEntries(
+          dataSourceCache != null ? dataSourceCache!.last.value : dataSource);
+      dataSourceFiltered2!.addAll(bestUsers);
+
       //print('Best=$bestUser');
     }
-    // print('dataSourceFiltered executed in ${stopwatch.elapsed.inMilliseconds}');
-    return cacheDataSourceFiltered;
   }
 
-  List<T>? getNearestEntries() {
-    if (bestFuzzySearch != null) return bestFuzzySearch;
+  List<T> getNearestEntries(List<T>? dataSource) {
+    if (dataSource == null) return [];
+
+    List<T> bestFuzzySearch = [];
 
     SearchEntry entry = SearchEntry(sText: arCriteria!.join(''));
 
-    bestFuzzySearch = [];
     int occu = 0;
 
     for (T element in dataSource) {
@@ -149,24 +186,22 @@ class TextCompletionControler<T extends SearchEntry> {
       if ((element).qB2.isNotEmpty) {
         occu = (entry.qB2.toSet().intersection(element.qB2.toSet())).length;
       }
-
       if ((element).qB3.isNotEmpty) {
         occu += (entry.qB3.toSet().intersection(element.qB3.toSet())).length;
       }
-      assert(bestFuzzySearch != null);
       (element).fuzzyOccu = occu;
       if (occu > 0) {
         element.fuzzyScore = (occu / (entry.qB2.length + entry.qB3.length));
       } else {
         element.fuzzyScore = 0;
       }
-      if (element.fuzzyScore! > 0) {
-        element.fuzzySearch = true;
-        bestFuzzySearch!.add(element);
-        bestFuzzySearch!
+      if (element.fuzzyScore! > 0 /* && element.fuzzySearchResult == null */) {
+        element.fuzzySearchResult = true;
+        bestFuzzySearch.add(element);
+        bestFuzzySearch
             .sort((a, b) => (b).fuzzyOccu!.compareTo((a).fuzzyOccu!));
-        if (bestFuzzySearch!.length > nbBestFuzzy) {
-          bestFuzzySearch!.removeLast();
+        if (bestFuzzySearch.length > nbBestFuzzy) {
+          bestFuzzySearch.removeLast();
         }
       }
     }
@@ -274,7 +309,8 @@ class SearchEntry {
   late String sText;
   List<String> qB2 = [];
   List<String> qB3 = [];
-  bool fuzzySearch = false; // true si c'est resultat de recherche approximative
+  bool fuzzySearchResult =
+      false; // true si c'est resultat de recherche approximative, false sinon. null si pas de recherche
   int?
       fuzzyOccu; // le nombre d'occurences trouvée, plus c'est elevé, plus c'est approchant. Sinon si non recherche approx
   double? fuzzyScore; // le pourcentage de résultat occu/occu des critères
@@ -284,6 +320,7 @@ class SearchEntry {
     qB2 = _quickBlock(this.sText, 2);
     qB3 = _quickBlock(this.sText, 3);
   }
+
   List<String> _quickBlock(String input, int n) {
     List<String> result = [];
 
