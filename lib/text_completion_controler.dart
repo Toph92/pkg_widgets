@@ -188,24 +188,10 @@ class TextCompletionControler<T extends SearchEntry> {
     dataSourceFiltered = null;
     if (onRequestUpdateDataSource != null) {
       dataSource = cacheManager.get(_arCriteria!.join(''));
-
-      /*String key = arCriteria!.join('');
-       for (CacheItem element in dataSourceCache!) {
-        if (element.key == key) {
-          dataSourceFiltered = element.value as List<T>;
-          return;
-        }
-      } */
       dataSource ??= await onRequestUpdateDataSource!(_arCriteria);
       if (dataSource != null && dataSource!.isNotEmpty) {
         cacheManager
             .add(CacheItem<T>(key: _arCriteria!.join(''), value: dataSource!));
-        /* dataSourceCache!
-            .add(CacheItem<T>(key: arCriteria!.join(''), value: dataSource!));
-        if (dataSourceCache!.length > 100) {
-          // 100 éléments max en cache, peut-être un peu grand surtout s'il y un bug quelque part :)
-          dataSourceCache!.removeAt(0);
-        } */
       }
     }
     assert(dataSource != null); // si null , c'est qu'il y a un problème
@@ -227,8 +213,6 @@ class TextCompletionControler<T extends SearchEntry> {
               : dataSource!);
 
       dataSourceFiltered!.addAll(bestUsers);
-
-      //print('Best=$bestUser');
     }
   }
 
