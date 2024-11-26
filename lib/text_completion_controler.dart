@@ -143,7 +143,6 @@ class TextCompletionControler<T extends SearchEntry> {
         }
       }
       dataSource = await onRequestUpdateDataSource!(arCriteria);
-      await Future.delayed(const Duration(milliseconds: 1000));
       if (dataSource != null && dataSource!.isNotEmpty) {
         dataSourceCache!
             .add(CacheItem<T>(key: arCriteria!.join(''), value: dataSource!));
