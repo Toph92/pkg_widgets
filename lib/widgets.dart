@@ -59,7 +59,8 @@ Widget vSpacer(double pixels) => SizedBox(
       height: pixels,
     );
 
-mixin WidgetGetSize<T extends StatefulWidget> on State<T> {
+// marche plus trop ce truc. C'utilisé ?
+mixin WidgetGetSizeOld<T extends StatefulWidget> on State<T> {
   final GlobalKey _keySize = GlobalKey();
   Size? _resultBoxSize;
   double _width = 0;

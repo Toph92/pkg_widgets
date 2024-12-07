@@ -16,6 +16,7 @@ class DialogCust<T> {
   bool shuffleButtons;
   bool withBackgroundColor;
   bool blurBackground;
+  bool? dimissible;
 
   //
 
@@ -31,6 +32,7 @@ class DialogCust<T> {
     this.shuffleButtons = false,
     this.withBackgroundColor = false,
     this.blurBackground = false,
+    this.dimissible,
   }) {
     assert(this.message is String || this.message is Widget);
     assert(this.altMessage is String ||
@@ -42,16 +44,18 @@ class DialogCust<T> {
   Future<T?> _showAlertDialog() async {
     T? result;
 
+    dimissible ??= type.dimissible;
+    dimissible ??= false;
+
     if (tag != null && checked.containsKey(tag)) return null;
     await showGeneralDialog(
-      barrierColor: type.dimissible == false &&
-              withBackgroundColor &&
-              type.color != null
-          ? type.color!.withOpacity(0.5)
-          : type.dimissible == true && withBackgroundColor && type.color != null
-              ? type.color!.withOpacity(0.1)
-              : Colors.black.withOpacity(0.5),
-      barrierDismissible: type.dimissible ?? false,
+      barrierColor:
+          dimissible == false && withBackgroundColor && type.color != null
+              ? type.color!.withOpacity(0.5)
+              : dimissible == true && withBackgroundColor && type.color != null
+                  ? type.color!.withOpacity(0.1)
+                  : Colors.black.withOpacity(0.5),
+      barrierDismissible: dimissible!,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       context: context,
       transitionDuration: const Duration(milliseconds: 200),
@@ -97,6 +101,7 @@ class DialogCust<T> {
   Future<T?> ok() async {
     actionButtons = [DialogButton(label: "OK", value: true)];
     type = DialogType.info;
+    dimissible ??= true;
     withBackgroundColor = true;
     return _showAlertDialog();
   }
@@ -299,7 +304,7 @@ enum DialogType {
       color: Colors.blue,
       iconData: Icons.info_outline_rounded,
       size: 50,
-      dimissible: true),
+      dimissible: null),
   error(
       color: Colors.red,
       iconData: Icons.error_outline_rounded,

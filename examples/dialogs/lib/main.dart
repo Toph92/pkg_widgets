@@ -45,10 +45,9 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with WidgetGetSize {
+class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
-    initGetSize();
     super.initState();
   }
 
@@ -69,6 +68,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetGetSize {
               onPressed: () async {
                 bool? bResult = await DialogCust<bool>(
                   context: context,
+                  //dimissible: false,
                   message:
                       'Ceci est un message d\'information pour notifier l\'utilisateur.',
                   altMessage: const Row(

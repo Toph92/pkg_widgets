@@ -1,4 +1,7 @@
-// description: Example of how to use the package to get the size of a widget
+
+// Fonctionne plus et ne semble pas utilisé. A supprimer ?
+
+/* // description: Example of how to use the package to get the size of a widget
 // resize the window to see the size of the container change
 // Useful for Stack() widgets
 //
@@ -90,3 +93,4 @@ class _MyHomePageState extends State<MyHomePage>
         })));
   }
 }
+ */
