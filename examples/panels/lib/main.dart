@@ -25,7 +25,6 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     panelsController.list.add(Panel(
-        id: 1,
         width: 500,
         child: Container(
             color: Colors.amber,
@@ -36,14 +35,13 @@ class MyAppState extends State<MyApp> {
                   Text('Container 1', style: TextStyle(color: Colors.black)),
                   TextButton(
                       onPressed: () {
-                        panelsController.setVisiblity(id: 1, visible: false);
+                        panelsController.setVisiblity(index: 0, visible: false);
                       },
                       child: Text("Cacher"))
                 ],
               ),
             )))));
     panelsController.list.add(Panel(
-        id: 2,
         width: 200,
         child: LayoutBuilder(builder: (context, constraints) {
           return Container(
@@ -57,7 +55,8 @@ class MyAppState extends State<MyApp> {
                         style: TextStyle(color: Colors.black)),
                     TextButton(
                         onPressed: () {
-                          panelsController.setVisiblity(id: 2, visible: false);
+                          panelsController.setVisiblity(
+                              index: 1, visible: false);
                         },
                         child: Text("Cacher"))
                   ],
@@ -65,7 +64,6 @@ class MyAppState extends State<MyApp> {
               )));
         })));
     panelsController.list.add(Panel(
-        id: 3,
         width: 500,
         visible: false,
         child: Container(
@@ -74,7 +72,6 @@ class MyAppState extends State<MyApp> {
                 child: Text('Container 3',
                     style: TextStyle(color: Colors.white))))));
     panelsController.list.add(Panel(
-        id: 4,
         width: 500,
         child: Container(
             color: Colors.red,
@@ -117,10 +114,10 @@ class MyAppState extends State<MyApp> {
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                           Switch(
-                            value: panelsController.isVisible(panelId),
+                            value: panelsController.isVisible(index),
                             onChanged: (value) {
                               panelsController.setVisiblity(
-                                  id: panelId, visible: value);
+                                  index: index, visible: value);
                               _refresh();
                             },
                           ),

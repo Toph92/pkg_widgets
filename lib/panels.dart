@@ -3,16 +3,11 @@ import 'package:flutter/material.dart';
 class Panel {
   double width;
   double? _currentWidth;
-  int id;
   bool visible;
   bool? _currentVisibility;
   Widget? child;
 
-  Panel(
-      {required this.id,
-      this.width = 500,
-      required this.child,
-      this.visible = true});
+  Panel({this.width = 500, required this.child, this.visible = true});
 }
 
 class PanelView extends StatelessWidget {
@@ -85,18 +80,16 @@ class PanelsController extends ChangeNotifier {
     return count.clamp(1, list.length);
   }
 
-  void setVisiblity({required int id, required bool visible}) {
-    int index = list.indexWhere((element) => element.id == id);
-    assert(index != -1);
+  void setVisiblity({required int index, required bool visible}) {
+    assert(index >= 0 && index < list.length);
     if (list[index].visible != visible) {
       list[index].visible = visible;
       notifyListeners();
     }
   }
 
-  bool isVisible(int id) {
-    int index = list.indexWhere((element) => element.id == id);
-    assert(index != -1);
+  bool isVisible(int index) {
+    assert(index >= 0 && index < list.length);
     return list[index].visible;
   }
 
