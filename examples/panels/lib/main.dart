@@ -67,6 +67,7 @@ class MyAppState extends State<MyApp> {
     panelsController.list.add(Panel(
         id: 3,
         width: 500,
+        visible: false,
         child: Container(
             color: Colors.blue,
             child: Center(

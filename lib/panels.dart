@@ -4,13 +4,15 @@ class Panel {
   double width;
   double? _currentWidth;
   int id;
-  bool visible = false;
+  bool visible;
   bool? _currentVisibility;
   Widget? child;
 
-  Panel({required this.id, this.width = 500, required this.child}) {
-    visible = true;
-  }
+  Panel(
+      {required this.id,
+      this.width = 500,
+      required this.child,
+      this.visible = true});
 }
 
 class PanelView extends StatelessWidget {
