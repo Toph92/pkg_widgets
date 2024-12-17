@@ -4,7 +4,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:pkg_widgets/dialogs.dart';
-import 'package:pkg_widgets/widgets.dart';
 
 void main() {
   runApp(const MyApp());

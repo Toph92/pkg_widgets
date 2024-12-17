@@ -4,6 +4,7 @@
     // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "pkg_widgets",
             "request": "launch",
@@ -97,6 +98,26 @@
         {
             "name": "text_completion (release mode)",
             "cwd": "examples/text_completion",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "panels",
+            "cwd": "examples/panels",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "panels (profile mode)",
+            "cwd": "examples/panels",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "panels (release mode)",
+            "cwd": "examples/panels",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
