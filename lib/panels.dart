@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 
 class Panel {
   double width;
+  bool visible = false;
   Widget? child;
 
-  Panel({this.width = 500, required this.child});
+  Panel({this.width = 500, required this.child}) {
+    visible = true;
+  }
 }
 
 class PanelView extends StatelessWidget {
@@ -37,7 +40,7 @@ class PanelView extends StatelessWidget {
   }
 }
 
-class Panels {
+class PanelsController {
   List<Panel> list = [];
   int currentPanel = 0;
   int lastPanel = 0;
@@ -80,7 +83,7 @@ class HMultiPanels extends StatefulWidget {
     required this.panels,
   });
 
-  final Panels panels;
+  final PanelsController panels;
   @override
   State<HMultiPanels> createState() => _HMultiPanelsState();
 }
@@ -94,8 +97,6 @@ class _HMultiPanelsState extends State<HMultiPanels> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        /* final int newVisibleContainers =
-            (constraints.maxWidth / 500).floor().clamp(1, 4); */
         final int newVisibleContainers =
             widget.panels.getActivePanel(constraints.maxWidth);
         final bool bRemovePanel = newVisibleContainers > _visibleContainers;
@@ -104,12 +105,22 @@ class _HMultiPanelsState extends State<HMultiPanels> {
         return StatefulBuilder(
           builder: (context, setState) {
             final double totalWidth = constraints.maxWidth;
+            /* final List<double> widths = List.generate(4, (index) {
+              if (index < newVisibleContainers - 1) {
+                return widget.panels.list[index].width;
+              }
+              if (index == newVisibleContainers - 1) {                
+                return totalWidth -
+                    widget.panels.totalWidth(newVisibleContainers - 1);
+              }
+              return 0.0;
+            }); */
+
             final List<double> widths = List.generate(4, (index) {
               if (index < newVisibleContainers - 1) {
                 return widget.panels.list[index].width;
               }
               if (index == newVisibleContainers - 1) {
-                //return totalWidth - (500.0 * (newVisibleContainers - 1));
                 return totalWidth -
                     widget.panels.totalWidth(newVisibleContainers - 1);
               }

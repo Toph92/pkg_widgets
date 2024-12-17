@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pkg_widgets/panels/panels.dart';
+import 'package:pkg_widgets/panels.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,19 +13,19 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  Panels panels = Panels();
+  PanelsController panelsController = PanelsController();
 
   @override
   void initState() {
     super.initState();
-    panels.list.add(Panel(
+    panelsController.list.add(Panel(
         width: 500,
         child: Container(
             color: Colors.amber,
             child: Center(
                 child: Text('Container 1',
                     style: TextStyle(color: Colors.black))))));
-    panels.list.add(Panel(
+    panelsController.list.add(Panel(
         width: 200,
         child: LayoutBuilder(builder: (context, constraints) {
           return Container(
@@ -41,14 +41,14 @@ class MyAppState extends State<MyApp> {
                 ),
               )));
         })));
-    panels.list.add(Panel(
+    panelsController.list.add(Panel(
         width: 500,
         child: Container(
             color: Colors.blue,
             child: Center(
                 child: Text('Container 3',
                     style: TextStyle(color: Colors.white))))));
-    panels.list.add(Panel(
+    panelsController.list.add(Panel(
         width: 500,
         child: Container(
             color: Colors.red,
@@ -65,7 +65,7 @@ class MyAppState extends State<MyApp> {
           title: const Text('Synchronized Responsive Layout'),
         ),
         body: HMultiPanels(
-          panels: panels,
+          panels: panelsController,
         ),
       ),
     );
