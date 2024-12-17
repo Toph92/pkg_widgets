@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [
 
+
         {
             "name": "pkg_widgets",
             "request": "launch",
@@ -118,6 +119,26 @@
         {
             "name": "panels (release mode)",
             "cwd": "examples/panels",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "animList",
+            "cwd": "examples/animated_list",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "animList (profile mode)",
+            "cwd": "examples/animated_list",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "animList (release mode)",
+            "cwd": "examples/animated_list",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
