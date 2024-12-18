@@ -25,14 +25,15 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     panelsController.list.add(Panel(
-        width: 500,
+        width: 200,
+        sizable: 0,
         child: Container(
             color: Colors.amber,
             child: Center(
                 child: FittedBox(
               child: Column(
                 children: [
-                  Text('Container 1', style: TextStyle(color: Colors.black)),
+                  Text('Menu Fixe', style: TextStyle(color: Colors.black)),
                   TextButton(
                       onPressed: () {
                         panelsController.setVisiblity(index: 0, visible: false);
@@ -42,7 +43,9 @@ class MyAppState extends State<MyApp> {
               ),
             )))));
     panelsController.list.add(Panel(
-        width: 200,
+        width: 500,
+        sizable: 100,
+        noHide: true,
         child: LayoutBuilder(builder: (context, constraints) {
           return Container(
               color: Colors.green,
@@ -50,7 +53,8 @@ class MyAppState extends State<MyApp> {
                   child: FittedBox(
                 child: Column(
                   children: [
-                    Text('Container 2', style: TextStyle(color: Colors.black)),
+                    Text('Container Sizable',
+                        style: TextStyle(color: Colors.black)),
                     Text('${constraints.maxWidth}',
                         style: TextStyle(color: Colors.black)),
                     TextButton(
@@ -65,26 +69,27 @@ class MyAppState extends State<MyApp> {
         })));
     panelsController.list.add(Panel(
         width: 500,
+        sizable: 0,
         visible: false,
         child: Container(
             color: Colors.blue,
             child: Center(
-                child: Text('Container 3',
+                child: Text('Container Fixe',
                     style: TextStyle(color: Colors.white))))));
-    panelsController.list.add(Panel(
+    /* panelsController.list.add(Panel(
         width: 500,
         child: Container(
             color: Colors.red,
             child: Center(
                 child: Text('Container 4',
-                    style: TextStyle(color: Colors.black))))));
-    panelsController.setSeparator(
+                    style: TextStyle(color: Colors.black)))))); */
+    /* panelsController.setSeparator(
         width: 4,
         separator: const VerticalDivider(
           width: 4,
           thickness: 2,
           color: Colors.blue,
-        ));
+        )); */
   }
 
   @override
@@ -105,7 +110,8 @@ class MyAppState extends State<MyApp> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     spacing: 20,
-                    children: List.generate(4, (index) {
+                    children:
+                        List.generate(panelsController.list.length, (index) {
                       int panelId = index + 1;
                       return Row(
                         children: [

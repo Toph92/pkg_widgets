@@ -3,11 +3,19 @@ import 'package:flutter/material.dart';
 class Panel {
   double width;
   double? _currentWidth;
-  bool visible;
+  bool visible; // c'est l'état initial, cela peut être caché ensuite
   bool? _currentVisibility;
+  bool noHide; // toujours visible, quelque soit la largeur de visible
+  int sizable; // 0: non sizable, 100: sizable. Pour les pourcentages, on verra plus tard
   Widget? child;
+  int durationMilliseconds = 0;
 
-  Panel({this.width = 500, required this.child, this.visible = true});
+  Panel(
+      {this.width = 500,
+      required this.child,
+      this.visible = true,
+      this.sizable = 100,
+      this.noHide = false});
 }
 
 class PanelView extends StatelessWidget {
@@ -16,23 +24,25 @@ class PanelView extends StatelessWidget {
       required this.panel,
       required this.milliseconds,
       required this.width,
-      required this.isAnimating});
+      required this.isAnimating,
+      required this.durationMilliseconds});
 
   final Panel panel;
   final int milliseconds;
   final double width;
   final bool isAnimating;
+  final int durationMilliseconds;
 
   @override
   Widget build(BuildContext context) {
-    int d = milliseconds;
-    if (width > panel.width) {
+    /*int d = milliseconds;
+     if (width > panel.width) {
       d = milliseconds ~/ 2;
     } else if (width < panel.width) {
       d = milliseconds * 2;
-    }
+    } */
     return AnimatedContainer(
-      duration: Duration(milliseconds: isAnimating ? d : 0),
+      duration: Duration(milliseconds: isAnimating ? durationMilliseconds : 0),
       curve: Curves.easeInOut,
       width: width,
       child: panel.child,
@@ -151,9 +161,27 @@ class _HMultiPanelsState extends State<HMultiPanels> {
                 element._currentWidth =
                     element.width - (widget.panels.separatorWidth ?? 0);
                 element._currentVisibility = true;
-                totalWidth += element.width;
+                //totalWidth += element.width;
+                totalWidth += element._currentWidth!;
+              } else if (element.noHide) {
+                /* if (element.sizable != 0) {
+                  element._currentWidth =
+                      element.width - (widget.panels.separatorWidth ?? 0);
+                } else {
+                  element._currentWidth = 0.0;
+                } */
+                element._currentWidth =
+                    element.width - (widget.panels.separatorWidth ?? 0);
+                totalWidth += element._currentWidth!;
+                element._currentVisibility = true;
               } else {
                 element._currentWidth = 0.0;
+                element._currentVisibility = false;
+              }
+            }
+            for (Panel element in widget.panels.list) {
+              element.durationMilliseconds = milliseconds;
+              if (element._currentWidth == 0) {
                 element._currentVisibility = false;
               }
             }
@@ -168,11 +196,17 @@ class _HMultiPanelsState extends State<HMultiPanels> {
                 ),
               );
             }
-            // on ajuste le dernier élément
-            Panel last = widget.panels.list
-                .where((element) => element._currentWidth! != 0)
-                .last;
-            last._currentWidth = constraints.maxWidth - totalWidth + last.width;
+            // on ajuste le dernier élément ajustable
+            try {
+              Panel last = widget.panels.list
+                  .where((element) =>
+                      element._currentWidth! != 0 && element.sizable != 0)
+                  .last;
+              last._currentWidth =
+                  constraints.maxWidth - totalWidth + last.width;
+            } catch (e) {
+              print(e);
+            }
 
             // on regarde si la liste a été modifiée
             modifiedList = 0;
@@ -181,8 +215,11 @@ class _HMultiPanelsState extends State<HMultiPanels> {
                 if (panelsRef[i] != widget.panels.list[i]._currentVisibility) {
                   if (panelsRef[i] == true) {
                     modifiedList = -1;
+                    widget.panels.list[i].durationMilliseconds =
+                        (milliseconds * 2).toInt();
                   } else {
                     modifiedList = 1;
+                    widget.panels.list[i].durationMilliseconds = milliseconds;
                   }
                   break;
                 }
@@ -199,9 +236,13 @@ class _HMultiPanelsState extends State<HMultiPanels> {
             if (modifiedList != 0) {
               int d = milliseconds;
               if (modifiedList > 0) {
-                d = 0;
+                //print("ajout");
+                //d = 0;
+                _isAnimating = true;
+              } else {
+                //print("suppression");
+                _isAnimating = true;
               }
-              _isAnimating = true;
               Future.delayed(Duration(milliseconds: d), () {
                 if (mounted) {
                   setState(() {
@@ -219,6 +260,8 @@ class _HMultiPanelsState extends State<HMultiPanels> {
                     milliseconds: milliseconds,
                     width: widget.panels.list[i]._currentWidth!,
                     isAnimating: _isAnimating,
+                    durationMilliseconds:
+                        widget.panels.list[i].durationMilliseconds,
                   ),
                   if (widget.panels.separator != null &&
                       widget.panels.list[i]._currentVisibility == true &&
