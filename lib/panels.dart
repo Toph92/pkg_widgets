@@ -4,8 +4,8 @@ class Panel {
   double width;
   double? _currentWidth;
   bool visible; // c'est l'état initial, cela peut être caché ensuite
-  bool? _currentVisibility;
-  bool noHide; // toujours visible, quelque soit la largeur de visible
+  bool? displayed; // c'est l'état actuel, visible ou non
+  bool noHide; // toujours visible, quelque soit l'état de visible
   int sizable; // 0: non sizable, 100: sizable. Pour les pourcentages, on verra plus tard
   Widget? child;
   int durationMilliseconds = 0;
@@ -15,7 +15,9 @@ class Panel {
       required this.child,
       this.visible = true,
       this.sizable = 100,
-      this.noHide = false});
+      this.noHide = false}) {
+    displayed = visible;
+  }
 }
 
 class PanelView extends StatelessWidget {
@@ -73,21 +75,6 @@ class PanelsController extends ChangeNotifier {
     }
 
     return totalWidth;
-  }
-
-  int getActivePanel(double totalWidth) {
-    double width = 0;
-    int count = 0;
-    for (Panel panel in list) {
-      if (panel.visible) {
-        width += panel.width;
-      }
-      if (width > totalWidth) {
-        break;
-      }
-      count++;
-    }
-    return count.clamp(1, list.length);
   }
 
   void setVisiblity({required int index, required bool visible}) {
@@ -160,34 +147,28 @@ class _HMultiPanelsState extends State<HMultiPanels> {
                   totalWidth + element.width < constraints.maxWidth) {
                 element._currentWidth =
                     element.width - (widget.panels.separatorWidth ?? 0);
-                element._currentVisibility = true;
+                element.displayed = true;
                 //totalWidth += element.width;
                 totalWidth += element._currentWidth!;
               } else if (element.noHide) {
-                /* if (element.sizable != 0) {
-                  element._currentWidth =
-                      element.width - (widget.panels.separatorWidth ?? 0);
-                } else {
-                  element._currentWidth = 0.0;
-                } */
                 element._currentWidth =
                     element.width - (widget.panels.separatorWidth ?? 0);
                 totalWidth += element._currentWidth!;
-                element._currentVisibility = true;
+                element.displayed = true;
               } else {
                 element._currentWidth = 0.0;
-                element._currentVisibility = false;
+                element.displayed = false;
               }
             }
             for (Panel element in widget.panels.list) {
               element.durationMilliseconds = milliseconds;
               if (element._currentWidth == 0) {
-                element._currentVisibility = false;
+                element.displayed = false;
               }
             }
             // plus rien à afficher
             if (widget.panels.list
-                .where((element) => element._currentVisibility! == true)
+                .where((element) => element.displayed! == true)
                 .isEmpty) {
               return SizedBox(
                 width: constraints.maxWidth,
@@ -212,7 +193,7 @@ class _HMultiPanelsState extends State<HMultiPanels> {
             modifiedList = 0;
             if (panelsRef.length == widget.panels.list.length) {
               for (int i = 0; i < panelsRef.length; i++) {
-                if (panelsRef[i] != widget.panels.list[i]._currentVisibility) {
+                if (panelsRef[i] != widget.panels.list[i].displayed) {
                   if (panelsRef[i] == true) {
                     modifiedList = -1;
                     widget.panels.list[i].durationMilliseconds =
@@ -227,9 +208,8 @@ class _HMultiPanelsState extends State<HMultiPanels> {
             }
             // on met à jour la liste de référence
             panelsRef.clear();
-            panelsRef = widget.panels.list
-                .map((panel) => panel._currentVisibility!)
-                .toList();
+            panelsRef =
+                widget.panels.list.map((panel) => panel.displayed!).toList();
 
             // si la liste à été modifiée, on lance l'animation
             // quand même pratique les commentaires avec Copilot !
@@ -264,11 +244,10 @@ class _HMultiPanelsState extends State<HMultiPanels> {
                         widget.panels.list[i].durationMilliseconds,
                   ),
                   if (widget.panels.separator != null &&
-                      widget.panels.list[i]._currentVisibility == true &&
+                      widget.panels.list[i].displayed == true &&
                       widget.panels.list[i] !=
                           widget.panels.list
-                              .where((element) =>
-                                  element._currentVisibility! == true)
+                              .where((element) => element.displayed! == true)
                               .last)
                     widget.panels.separator!,
                 ],
