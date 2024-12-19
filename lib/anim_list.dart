@@ -180,7 +180,7 @@ enum AnimationType {
 } */
 
 class AnimItem<T> {
-  final bool separator;
+  bool separator;
   final dynamic id;
   final T child;
 
