@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 /// Contrôleur pour gérer une liste animée générique
-class GenericAnimatedListController<T extends ListItem> {
-  GenericAnimatedListController(
+class AnimListController<T> {
+  AnimListController(
       {this.idExtractor,
       this.sortBy,
       this.duration = const Duration(milliseconds: 200),
@@ -11,11 +11,11 @@ class GenericAnimatedListController<T extends ListItem> {
       : assert(idExtractor != null);
 
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
-  final List<T> items = [];
+  final List<AnimItem<T>> items = [];
   dynamic Function(T)? idExtractor;
   int Function(T item1, T item2)? sortBy;
-  Widget Function(BuildContext context, T item, AnimationType action, int index,
-      bool separator)? itemBuilder;
+  Widget Function(BuildContext context, AnimItem<T> item, AnimationType action,
+      int index, bool separator)? itemBuilder;
   Widget? separator;
   final Duration duration;
   final bool reverseOrder;
@@ -25,18 +25,18 @@ class GenericAnimatedListController<T extends ListItem> {
   }
 
   /// ajoute à la fin de la liste sans prendre en compte le tri
-  void addItem(T item) {
+  void addItem(AnimItem<T> item) {
     final int index = items.length;
     items.add(item);
     listKey.currentState?.insertItem(index, duration: duration);
   }
 
-  void insertItem(T item) {
+  void insertItem(AnimItem<T> item) {
     int insertionIndex = 0;
     while (insertionIndex < items.length &&
         (reverseOrder
-            ? sortBy!(items[insertionIndex], item) > 0
-            : sortBy!(items[insertionIndex], item) < 0)) {
+            ? sortBy!(items[insertionIndex].child, item.child) > 0
+            : sortBy!(items[insertionIndex].child, item.child) < 0)) {
       insertionIndex++;
     }
     items.insert(insertionIndex, item);
@@ -48,7 +48,7 @@ class GenericAnimatedListController<T extends ListItem> {
   ) {
     assert(itemBuilder != null);
     if (index < 0 || index >= items.length) return;
-    final T removedItem = items[index];
+    final AnimItem<T> removedItem = items[index];
     listKey.currentState?.removeItem(
       index,
       (context, animation) => SizeTransition(
@@ -60,25 +60,28 @@ class GenericAnimatedListController<T extends ListItem> {
     items.removeAt(index);
   }
 
-  void updateList(List<T> newItems) {
-    Set<dynamic> existingIds = items.map(idExtractor!).toSet();
-    Set<dynamic> newIds = newItems.map(idExtractor!).toSet();
+  void updateList(List<AnimItem<T>> newItems) {
+    assert(idExtractor != null);
+
+    Set<dynamic> existingIds =
+        items.map((item) => idExtractor!(item.child)).toSet();
+    Set<dynamic> newIds = newItems.map((item) => idExtractor!).toSet();
 
     // Trier les nouveaux éléments
     reverseOrder
-        ? newItems.sort((b, a) => sortBy!(b, a))
-        : newItems.sort((a, b) => sortBy!(a, b));
+        ? newItems.sort((b, a) => sortBy!(b.child, a.child))
+        : newItems.sort((a, b) => sortBy!(a.child, b.child));
 
     // Supprimer les éléments existants non présents dans les nouveaux
     final itemsToRemove = existingIds.difference(newIds);
     for (final id in itemsToRemove) {
-      final index = items.indexWhere((item) => idExtractor!(item) == id);
+      final index = items.indexWhere((item) => idExtractor!(item.child) == id);
       if (index != -1) removeItem(index);
     }
 
     // Insérer les nouveaux éléments à la bonne position
-    for (final T newItem in newItems) {
-      final dynamic newId = idExtractor!(newItem);
+    for (final AnimItem<T> newItem in newItems) {
+      final dynamic newId = idExtractor!(newItem.child);
       if (!existingIds.contains(newId)) {
         insertItem(newItem);
       }
@@ -87,10 +90,10 @@ class GenericAnimatedListController<T extends ListItem> {
 }
 
 /// Widget générique pour afficher une liste animée
-class GenericAnimatedList<T extends ListItem> extends StatelessWidget {
-  final GenericAnimatedListController<T> controller;
+class AnimList<T> extends StatelessWidget {
+  final AnimListController<T> controller;
 
-  const GenericAnimatedList({
+  const AnimList({
     super.key,
     required this.controller,
 
@@ -127,10 +130,10 @@ class GenericAnimatedList<T extends ListItem> extends StatelessWidget {
       key: controller.listKey,
       initialItemCount: controller.items.length,
       itemBuilder: (context, index, animation) {
-        final T item = controller.items[index];
+        final AnimItem<T> item = controller.items[index];
         return SizeTransition(
             sizeFactor: animation,
-            child: item.separator == true && controller.separator != null
+            child: controller.separator != null && item.separator == true
                 ? Column(
                     children: [
                       controller.separator!,
@@ -153,12 +156,19 @@ enum AnimationType {
   update,
 }
 
-class ListItem<T> {
+/* mixin ListItem {
   /* final T item;
   final int index; */
   //final AnimationType animationType;
-  final bool separator;
+  final bool separator = false;
 
   //ListItem({required this.item, required this.index, this.separator = false});
-  ListItem({this.separator = false});
+  //ListItem({this.separator = false});
+} */
+
+class AnimItem<T> {
+  final bool separator;
+  final T child;
+
+  AnimItem(this.child, {this.separator = false});
 }

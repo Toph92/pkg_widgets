@@ -20,12 +20,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Person extends ListItem {
+class Person {
   final int id;
   final String firstName;
   final String lastName;
 
-  Person(this.id, this.firstName, this.lastName, {super.separator = false});
+  Person(
+    this.id,
+    this.firstName,
+    this.lastName,
+  );
 
   @override
   String toString() => 'Person(id: $id, name: $firstName $lastName)';
@@ -42,30 +46,29 @@ class PersonListExample extends StatefulWidget {
 class PersonListExampleState extends State<PersonListExample> {
   PersonListExampleState() {
     _personController.itemBuilder =
-        (context, person, AnimationType animation, int index, bool separator) {
+        (context, item, AnimationType animation, int index, bool separator) {
       return Card(
         color: animation == AnimationType.remove
             ? Colors.red
             : (index.isEven ? Colors.blue.shade600 : Colors.blue),
         child: ListTile(
-          title: Text('${person.firstName} ${person.lastName}',
+          title: Text('${item.child.firstName} ${item.child.lastName}',
               style: const TextStyle(color: Colors.white)),
           trailing: IconButton(
             icon: const Icon(Icons.delete, color: Colors.white),
             onPressed: () =>
-                _removePerson(_personController.items.indexOf(person)),
+                _removePerson(_personController.items.indexOf(item)),
           ),
         ),
       );
     };
   }
 
-  final GenericAnimatedListController<Person> _personController =
-      GenericAnimatedListController<Person>(
+  final AnimListController<Person> _personController =
+      AnimListController<Person>(
     idExtractor: (person) => person.id.toString(),
-    //stringExtractor: (person) => person.id.toString(),
     sortBy: (a, b) => a.firstName.compareTo(b.firstName),
-    reverseOrder: true,
+    //reverseOrder: true,
     separator: Divider(color: Colors.black, thickness: 2, height: 4),
   );
 
@@ -74,7 +77,7 @@ class PersonListExampleState extends State<PersonListExample> {
   void _insert() {
     int id = 10;
     final person = Person(id, 'FirstName $id', 'LastName');
-    _personController.insertItem(person);
+    _personController.insertItem(AnimItem(person));
   }
 
   void _removePerson(int index) {
@@ -87,8 +90,8 @@ class PersonListExampleState extends State<PersonListExample> {
         return Random().nextInt(20);
       });
       randomIds = randomIds.toSet().toList();
-      final updatedList = randomIds
-          .map((id) => Person(id, 'FirstName $id', 'LastName'))
+      final List<AnimItem<Person>> updatedList = randomIds
+          .map((id) => AnimItem(Person(id, 'FirstName $id', 'LastName')))
           .toList();
 
       // Mettre à jour la liste
@@ -99,27 +102,17 @@ class PersonListExampleState extends State<PersonListExample> {
   }
 
   void _fillList() {
-    final List<Person> list = [
-      Person(1, 'John', 'Doe'),
-      Person(9, 'Grace', 'Black'),
-      Person(2, 'Williams', 'Doe'),
-      Person(3, 'Alice', 'Smith'),
-      Person(4, 'Bob', 'Smith', separator: true),
-      Person(6, 'Daisy', 'Johnson'),
-      Person(7, 'Eve', 'Jackson'),
-      Person(8, 'Frank', 'White'),
-      Person(10, 'Hank', 'Pym'),
-      Person(5, 'Charlie', 'Brown'),
-      /*     Person(11, 'Ivy', 'Green'),
-      Person(12, 'Jack', 'Black'),
-      Person(13, 'Karen', 'White'),
-      Person(14, 'Leo', 'King'),
-      Person(15, 'Mona', 'Lisa'),
-      Person(16, 'Nina', 'Brown'),
-      Person(17, 'Oscar', 'Wilde'),
-      Person(18, 'Paul', 'Walker'),
-      Person(19, 'Quinn', 'Carter'),
-      Person(20, 'Rose', 'Tyler'), */
+    final List<AnimItem<Person>> list = [
+      AnimItem<Person>(Person(0, 'John', 'Doe')),
+      AnimItem<Person>(Person(9, 'Grace', 'Black')),
+      AnimItem<Person>(Person(2, 'Williams', 'Doe')),
+      AnimItem<Person>(Person(3, 'Alice', 'Smith')),
+      AnimItem<Person>(Person(4, 'Bob', 'Smith'), separator: true),
+      AnimItem<Person>(Person(6, 'Daisy', 'Johnson')),
+      AnimItem<Person>(Person(7, 'Eve', 'Jackson')),
+      AnimItem<Person>(Person(8, 'Frank', 'White')),
+      AnimItem<Person>(Person(10, 'Hank', 'Pym')),
+      AnimItem<Person>(Person(5, 'Charlie', 'Brown')),
     ];
     _personController.updateList(list);
   }
@@ -128,7 +121,7 @@ class PersonListExampleState extends State<PersonListExample> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Liste des Personnes')),
-      body: GenericAnimatedList<Person>(
+      body: AnimList<Person>(
         controller: _personController,
       ),
       floatingActionButton: Column(
@@ -143,6 +136,7 @@ class PersonListExampleState extends State<PersonListExample> {
           FloatingActionButton(
             heroTag: 'update',
             onPressed: _fillList,
+            //onPressed: _simulateNetworkUpdate,
             child: const Icon(Icons.refresh),
           ),
         ],
