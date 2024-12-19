@@ -4,7 +4,7 @@ class Panel {
   double width;
   double? _currentWidth;
   bool visible; // c'est l'état initial, cela peut être caché ensuite
-  bool? displayed; // c'est l'état actuel, visible ou non
+  late bool displayed; // c'est l'état actuel, visible ou non
   bool noHide; // toujours visible, quelque soit l'état de visible
   int sizable; // 0: non sizable, 100: sizable. Pour les pourcentages, on verra plus tard
   Widget? child;
@@ -168,7 +168,7 @@ class _HMultiPanelsState extends State<HMultiPanels> {
             }
             // plus rien à afficher
             if (widget.panels.list
-                .where((element) => element.displayed! == true)
+                .where((element) => element.displayed == true)
                 .isEmpty) {
               return SizedBox(
                 width: constraints.maxWidth,
@@ -209,7 +209,7 @@ class _HMultiPanelsState extends State<HMultiPanels> {
             // on met à jour la liste de référence
             panelsRef.clear();
             panelsRef =
-                widget.panels.list.map((panel) => panel.displayed!).toList();
+                widget.panels.list.map((panel) => panel.displayed).toList();
 
             // si la liste à été modifiée, on lance l'animation
             // quand même pratique les commentaires avec Copilot !
@@ -247,7 +247,7 @@ class _HMultiPanelsState extends State<HMultiPanels> {
                       widget.panels.list[i].displayed == true &&
                       widget.panels.list[i] !=
                           widget.panels.list
-                              .where((element) => element.displayed! == true)
+                              .where((element) => element.displayed == true)
                               .last)
                     widget.panels.separator!,
                 ],
