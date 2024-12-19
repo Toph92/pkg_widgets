@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 
 /// Contrôleur pour gérer une liste animée générique
-class GenericAnimatedListController<T> {
+class GenericAnimatedListController<T extends ListItem> {
   GenericAnimatedListController(
       {this.idExtractor,
       this.sortBy,
       this.duration = const Duration(milliseconds: 200),
-      this.reverseOrder = false})
+      this.reverseOrder = false,
+      this.separator})
       : assert(idExtractor != null);
 
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   final List<T> items = [];
   dynamic Function(T)? idExtractor;
   int Function(T item1, T item2)? sortBy;
-  Widget Function(
-          BuildContext context, T item, AnimationType action, int index)?
-      itemBuilder;
+  Widget Function(BuildContext context, T item, AnimationType action, int index,
+      bool separator)? itemBuilder;
+  Widget? separator;
   final Duration duration;
   final bool reverseOrder;
 
@@ -52,8 +53,8 @@ class GenericAnimatedListController<T> {
       index,
       (context, animation) => SizeTransition(
           sizeFactor: animation,
-          child:
-              itemBuilder!(context, removedItem, AnimationType.remove, index)),
+          child: itemBuilder!(
+              context, removedItem, AnimationType.remove, index, false)),
       duration: duration,
     );
     items.removeAt(index);
@@ -86,7 +87,7 @@ class GenericAnimatedListController<T> {
 }
 
 /// Widget générique pour afficher une liste animée
-class GenericAnimatedList<T> extends StatelessWidget {
+class GenericAnimatedList<T extends ListItem> extends StatelessWidget {
   final GenericAnimatedListController<T> controller;
 
   const GenericAnimatedList({
@@ -107,7 +108,8 @@ class GenericAnimatedList<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     assert(controller.itemBuilder != null);
 
-    controller.itemBuilder ??= (context, item, animationType, index) {
+    controller.itemBuilder ??=
+        (context, item, animationType, index, separator) {
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
@@ -128,8 +130,18 @@ class GenericAnimatedList<T> extends StatelessWidget {
         final T item = controller.items[index];
         return SizeTransition(
             sizeFactor: animation,
-            child: controller.itemBuilder!(
-                context, item, AnimationType.update, index));
+            child: item.separator == true && controller.separator != null
+                ? Column(
+                    children: [
+                      controller.separator!,
+                      controller.itemBuilder!(context, item,
+                          AnimationType.update, index, item.separator),
+                    ],
+                  )
+                : SizeTransition(
+                    sizeFactor: animation,
+                    child: controller.itemBuilder!(context, item,
+                        AnimationType.update, index, item.separator)));
       },
     );
   }
@@ -139,4 +151,14 @@ enum AnimationType {
   insert,
   remove,
   update,
+}
+
+class ListItem<T> {
+  /* final T item;
+  final int index; */
+  //final AnimationType animationType;
+  final bool separator;
+
+  //ListItem({required this.item, required this.index, this.separator = false});
+  ListItem({this.separator = false});
 }

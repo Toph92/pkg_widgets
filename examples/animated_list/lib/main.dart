@@ -20,12 +20,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Person {
+class Person extends ListItem {
   final int id;
   final String firstName;
   final String lastName;
 
-  Person(this.id, this.firstName, this.lastName);
+  Person(this.id, this.firstName, this.lastName, {super.separator = false});
 
   @override
   String toString() => 'Person(id: $id, name: $firstName $lastName)';
@@ -42,7 +42,7 @@ class PersonListExample extends StatefulWidget {
 class PersonListExampleState extends State<PersonListExample> {
   PersonListExampleState() {
     _personController.itemBuilder =
-        (context, person, AnimationType animation, int index) {
+        (context, person, AnimationType animation, int index, bool separator) {
       return Card(
         color: animation == AnimationType.remove
             ? Colors.red
@@ -66,6 +66,7 @@ class PersonListExampleState extends State<PersonListExample> {
     //stringExtractor: (person) => person.id.toString(),
     sortBy: (a, b) => a.firstName.compareTo(b.firstName),
     reverseOrder: true,
+    separator: Divider(color: Colors.black, thickness: 2, height: 4),
   );
 
   Widget Function(BuildContext, Animation<double>, Person)? itemBuilder;
@@ -103,7 +104,7 @@ class PersonListExampleState extends State<PersonListExample> {
       Person(9, 'Grace', 'Black'),
       Person(2, 'Williams', 'Doe'),
       Person(3, 'Alice', 'Smith'),
-      Person(4, 'Bob', 'Smith'),
+      Person(4, 'Bob', 'Smith', separator: true),
       Person(6, 'Daisy', 'Johnson'),
       Person(7, 'Eve', 'Jackson'),
       Person(8, 'Frank', 'White'),

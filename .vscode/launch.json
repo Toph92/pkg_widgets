@@ -4,25 +4,6 @@
     // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
-
-        {
-            "name": "pkg_widgets",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "pkg_widgets (profile mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "pkg_widgets (release mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        },
         {
             "name": "chips",
             "cwd": "examples/chips",
