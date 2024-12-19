@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 /// Contrôleur pour gérer une liste animée générique
 class AnimListController<T> {
   AnimListController(
-      {this.idExtractor,
+      {
+      /*this.idExtractor,*/
       this.sortBy,
       this.duration = const Duration(milliseconds: 200),
       this.reverseOrder = false,
-      this.separator})
-      : assert(idExtractor != null);
+      this.separator});
+  //: assert(idExtractor != null);
 
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   final List<AnimItem<T>> items = [];
-  dynamic Function(T)? idExtractor;
+  //dynamic Function(T)? idExtractor;
   int Function(T item1, T item2)? sortBy;
   Widget Function(BuildContext context, AnimItem<T> item, AnimationType action,
       int index, bool separator)? itemBuilder;
@@ -43,7 +44,7 @@ class AnimListController<T> {
     listKey.currentState?.insertItem(insertionIndex, duration: duration);
   }
 
-  void removeItem(
+  void removeItemByIndex(
     int index,
   ) {
     assert(itemBuilder != null);
@@ -60,12 +61,24 @@ class AnimListController<T> {
     items.removeAt(index);
   }
 
-  void updateList(List<AnimItem<T>> newItems) {
-    assert(idExtractor != null);
+  void removeItemById(
+    dynamic id,
+  ) {
+    assert(itemBuilder != null);
+    assert(id != null);
 
-    Set<dynamic> existingIds =
-        items.map((item) => idExtractor!(item.child)).toSet();
-    Set<dynamic> newIds = newItems.map((item) => idExtractor!).toSet();
+    int index = items.indexWhere((AnimItem item) => item.id == id);
+    assert(index != -1); // pour faire planter en dev
+    if (index != -1) {
+      removeItemByIndex(index);
+    }
+  }
+
+  void updateList(List<AnimItem<T>> newItems) {
+//    assert(idExtractor != null);
+
+    Set<dynamic> existingIds = items.map((item) => item.id).toSet();
+    Set<dynamic> newIds = newItems.map((item) => item.id).toSet();
 
     // Trier les nouveaux éléments
     reverseOrder
@@ -75,13 +88,13 @@ class AnimListController<T> {
     // Supprimer les éléments existants non présents dans les nouveaux
     final itemsToRemove = existingIds.difference(newIds);
     for (final id in itemsToRemove) {
-      final index = items.indexWhere((item) => idExtractor!(item.child) == id);
-      if (index != -1) removeItem(index);
+      final index = items.indexWhere((item) => item.id == id);
+      if (index != -1) removeItemById(id);
     }
 
     // Insérer les nouveaux éléments à la bonne position
     for (final AnimItem<T> newItem in newItems) {
-      final dynamic newId = idExtractor!(newItem.child);
+      final dynamic newId = newItem.id;
       if (!existingIds.contains(newId)) {
         insertItem(newItem);
       }
@@ -168,7 +181,8 @@ enum AnimationType {
 
 class AnimItem<T> {
   final bool separator;
+  final dynamic id;
   final T child;
 
-  AnimItem(this.child, {this.separator = false});
+  AnimItem({required this.id, required this.child, this.separator = false});
 }

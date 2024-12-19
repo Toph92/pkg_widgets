@@ -21,18 +21,16 @@ class MyApp extends StatelessWidget {
 }
 
 class Person {
-  final int id;
   final String firstName;
   final String lastName;
 
   Person(
-    this.id,
     this.firstName,
     this.lastName,
   );
 
   @override
-  String toString() => 'Person(id: $id, name: $firstName $lastName)';
+  String toString() => 'Person(name: $firstName $lastName)';
 }
 
 /// Exemple concret avec des objets Person
@@ -56,8 +54,7 @@ class PersonListExampleState extends State<PersonListExample> {
               style: const TextStyle(color: Colors.white)),
           trailing: IconButton(
             icon: const Icon(Icons.delete, color: Colors.white),
-            onPressed: () =>
-                _removePerson(_personController.items.indexOf(item)),
+            onPressed: () => _removePerson(item.id),
           ),
         ),
       );
@@ -66,7 +63,7 @@ class PersonListExampleState extends State<PersonListExample> {
 
   final AnimListController<Person> _personController =
       AnimListController<Person>(
-    idExtractor: (person) => person.id.toString(),
+    //idExtractor: (person) => person.id.toString(),
     sortBy: (a, b) => a.firstName.compareTo(b.firstName),
     //reverseOrder: true,
     separator: Divider(color: Colors.black, thickness: 2, height: 4),
@@ -76,12 +73,12 @@ class PersonListExampleState extends State<PersonListExample> {
 
   void _insert() {
     int id = 10;
-    final person = Person(id, 'FirstName $id', 'LastName');
-    _personController.insertItem(AnimItem(person));
+    final person = Person('FirstName $id', 'LastName');
+    _personController.insertItem(AnimItem(id: id, child: person));
   }
 
-  void _removePerson(int index) {
-    _personController.removeItem(index);
+  void _removePerson(int id) {
+    _personController.removeItemById(id);
   }
 
   void _simulateNetworkUpdate() {
@@ -91,7 +88,8 @@ class PersonListExampleState extends State<PersonListExample> {
       });
       randomIds = randomIds.toSet().toList();
       final List<AnimItem<Person>> updatedList = randomIds
-          .map((id) => AnimItem(Person(id, 'FirstName $id', 'LastName')))
+          .map((id) =>
+              AnimItem(id: id, child: Person('FirstName $id', 'LastName')))
           .toList();
 
       // Mettre à jour la liste
@@ -103,16 +101,16 @@ class PersonListExampleState extends State<PersonListExample> {
 
   void _fillList() {
     final List<AnimItem<Person>> list = [
-      AnimItem<Person>(Person(0, 'John', 'Doe')),
-      AnimItem<Person>(Person(9, 'Grace', 'Black')),
-      AnimItem<Person>(Person(2, 'Williams', 'Doe')),
-      AnimItem<Person>(Person(3, 'Alice', 'Smith')),
-      AnimItem<Person>(Person(4, 'Bob', 'Smith'), separator: true),
-      AnimItem<Person>(Person(6, 'Daisy', 'Johnson')),
-      AnimItem<Person>(Person(7, 'Eve', 'Jackson')),
-      AnimItem<Person>(Person(8, 'Frank', 'White')),
-      AnimItem<Person>(Person(10, 'Hank', 'Pym')),
-      AnimItem<Person>(Person(5, 'Charlie', 'Brown')),
+      AnimItem<Person>(id: 20, child: Person('John', 'Doe')),
+      AnimItem<Person>(id: 9, child: Person('Grace', 'Black')),
+      AnimItem<Person>(id: 2, child: Person('Williams', 'Doe')),
+      AnimItem<Person>(id: 3, child: Person('Alice', 'Smith')),
+      AnimItem<Person>(id: 4, child: Person('Bob', 'Smith'), separator: true),
+      AnimItem<Person>(id: 6, child: Person('Daisy', 'Johnson')),
+      AnimItem<Person>(id: 7, child: Person('Eve', 'Jackson')),
+      AnimItem<Person>(id: 8, child: Person('Frank', 'White')),
+      AnimItem<Person>(id: 10, child: Person('Hank', 'Pym')),
+      AnimItem<Person>(id: 5, child: Person('Charlie', 'Brown')),
     ];
     _personController.updateList(list);
   }
@@ -125,6 +123,7 @@ class PersonListExampleState extends State<PersonListExample> {
         controller: _personController,
       ),
       floatingActionButton: Column(
+        spacing: 12,
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton(
@@ -132,12 +131,16 @@ class PersonListExampleState extends State<PersonListExample> {
             onPressed: _insert,
             child: const Icon(Icons.add),
           ),
-          const SizedBox(height: 16),
           FloatingActionButton(
             heroTag: 'update',
             onPressed: _fillList,
             //onPressed: _simulateNetworkUpdate,
             child: const Icon(Icons.refresh),
+          ),
+          FloatingActionButton(
+            heroTag: 'rnd',
+            onPressed: _simulateNetworkUpdate,
+            child: const Icon(Icons.shuffle),
           ),
         ],
       ),
