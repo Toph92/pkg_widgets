@@ -19,23 +19,28 @@ class Preferences<T extends Enum> with ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> initialize() async {
-    sharedPrefs = await SharedPreferences.getInstance();
-
-    // Charger les préférences existantes
-    for (var key in enumValues) {
-      final keyString = key.toString();
-      if (sharedPrefs.containsKey(keyString)) {
-        if (sharedPrefs.get(keyString) is bool) {
-          prefs[key] = sharedPrefs.getBool(keyString);
-        } else if (sharedPrefs.get(keyString) is String) {
-          prefs[key] = sharedPrefs.getString(keyString);
-        } else if (sharedPrefs.get(keyString) is double) {
-          prefs[key] = sharedPrefs.getDouble(keyString);
+  Future<bool> initialize() async {
+    try {
+      sharedPrefs = await SharedPreferences.getInstance();
+      // Charger les préférences existantes
+      for (var key in enumValues) {
+        final keyString = key.toString();
+        if (sharedPrefs.containsKey(keyString)) {
+          if (sharedPrefs.get(keyString) is bool) {
+            prefs[key] = sharedPrefs.getBool(keyString);
+          } else if (sharedPrefs.get(keyString) is String) {
+            prefs[key] = sharedPrefs.getString(keyString);
+          } else if (sharedPrefs.get(keyString) is double) {
+            prefs[key] = sharedPrefs.getDouble(keyString);
+          }
         }
       }
+      _initDone = true;
+      return true;
+    } catch (e) {
+      print('Erreur lors de l\'initialisation des préférences : $e');
+      return false;
     }
-    _initDone = true;
   }
 
   dynamic operator [](T key) {
