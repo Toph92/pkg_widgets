@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pkg_widgets/preferences.dart';
 
-enum LocalPrefsEnum { saveAuto, username, fontSize }
+enum LocalPrefsEnum { saveAuto, username, fontSize, toto }
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -30,6 +30,7 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _initPreferences() async {
     await preferences.initialize();
+    preferences[LocalPrefsEnum.toto] ??= "toto";
     setState(() {});
   }
 
