@@ -6,6 +6,7 @@ class Preferences<T extends Enum> with ChangeNotifier {
   late SharedPreferences sharedPrefs;
   bool _initDone = false;
   final List<T> enumValues;
+  String sErrorMessage = '';
 
   Preferences({required this.enumValues}) {
     assert(enumValues.isNotEmpty, 'enumValues must not be empty');
@@ -38,7 +39,8 @@ class Preferences<T extends Enum> with ChangeNotifier {
       _initDone = true;
       return true;
     } catch (e) {
-      print('Erreur lors de l\'initialisation des préférences : $e');
+      sErrorMessage = 'Erreur lors de l\'initialisation des préférences : $e';
+      print(sErrorMessage);
       return false;
     }
   }
