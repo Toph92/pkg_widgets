@@ -9,120 +9,42 @@
             "cwd": "examples/chips",
             "request": "launch",
             "type": "dart"
-        },
-        {
-            "name": "chips (profile mode)",
-            "cwd": "examples/chips",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "chips (release mode)",
-            "cwd": "examples/chips",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        },
+        },        
         {
             "name": "dialogs",
             "cwd": "examples/dialogs",
             "request": "launch",
             "type": "dart"
-        },
-        {
-            "name": "dialogs (profile mode)",
-            "cwd": "examples/dialogs",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "dialogs (release mode)",
-            "cwd": "examples/dialogs",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        },
+        },        
         {
             "name": "getsize",
             "cwd": "examples/getsize",
             "request": "launch",
             "type": "dart"
-        },
-        {
-            "name": "getsize (profile mode)",
-            "cwd": "examples/getsize",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "getsize (release mode)",
-            "cwd": "examples/getsize",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        },
+        },        
         {
             "name": "text_completion",
             "cwd": "examples/text_completion",
             "request": "launch",
             "type": "dart"
-        },
-        {
-            "name": "text_completion (profile mode)",
-            "cwd": "examples/text_completion",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "text_completion (release mode)",
-            "cwd": "examples/text_completion",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        },
+        },        
         {
             "name": "panels",
             "cwd": "examples/panels",
             "request": "launch",
             "type": "dart"
-        },
-        {
-            "name": "panels (profile mode)",
-            "cwd": "examples/panels",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "panels (release mode)",
-            "cwd": "examples/panels",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        },
+        },        
         {
             "name": "animList",
             "cwd": "examples/animated_list",
             "request": "launch",
             "type": "dart"
-        },
+        },        
         {
-            "name": "animList (profile mode)",
-            "cwd": "examples/animated_list",
+            "name": "preferences",
+            "cwd": "examples/preferences",
             "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "animList (release mode)",
-            "cwd": "examples/animated_list",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        }
+            "type": "dart"
+        },        
     ]
 }
