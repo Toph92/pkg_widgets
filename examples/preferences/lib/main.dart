@@ -31,6 +31,8 @@ class SettingsScreenState extends State<SettingsScreen> {
   Future<void> _initPreferences() async {
     await preferences.initialize();
     preferences[LocalPrefsEnum.toto] ??= "toto";
+    preferences[LocalPrefsEnum.toto] = null;
+    print("toto=${preferences[LocalPrefsEnum.toto]}");
     setState(() {});
   }
 

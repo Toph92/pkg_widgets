@@ -61,6 +61,8 @@ class Preferences<T extends Enum> with ChangeNotifier {
       sharedPrefs.setString(keyString, value);
     } else if (value is double) {
       sharedPrefs.setDouble(keyString, value);
+    } else if (value == null) {
+      sharedPrefs.remove(keyString);
     } else {
       throw ArgumentError('Type non supporté pour SharedPreferences : $value');
     }
