@@ -29,8 +29,14 @@
             "type": "dart"
         },        
         {
-            "name": "panels",
-            "cwd": "examples/panels",
+            "name": "panels1",
+            "cwd": "examples/panels1",
+            "request": "launch",
+            "type": "dart"
+        },        
+        {
+            "name": "panels2",
+            "cwd": "examples/panels2",
             "request": "launch",
             "type": "dart"
         },        
