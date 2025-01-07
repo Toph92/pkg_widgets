@@ -17,6 +17,7 @@ class DialogCust<T> {
   bool withBackgroundColor;
   bool blurBackground;
   bool? dimissible;
+  Icon? icon;
 
   //
 
@@ -33,6 +34,7 @@ class DialogCust<T> {
     this.withBackgroundColor = false,
     this.blurBackground = false,
     this.dimissible,
+    this.icon,
   }) {
     assert(this.message is String || this.message is Widget);
     assert(this.altMessage is String ||
@@ -89,6 +91,7 @@ class DialogCust<T> {
                   tag: tag,
                   actionButtons: actionButtons,
                   type: type,
+                  icon: icon,
                   shuffleButtons: shuffleButtons,
                 ),
               )),
@@ -152,16 +155,16 @@ class DialogCust<T> {
 }
 
 class AlertDialogCust extends StatefulWidget {
-  const AlertDialogCust({
-    super.key,
-    required this.context,
-    required this.message,
-    this.altMessage,
-    required this.actionButtons,
-    required this.type,
-    required this.shuffleButtons,
-    this.tag,
-  });
+  const AlertDialogCust(
+      {super.key,
+      required this.context,
+      required this.message,
+      this.altMessage,
+      required this.actionButtons,
+      required this.type,
+      required this.shuffleButtons,
+      this.tag,
+      this.icon});
   final BuildContext context;
 
   /// String or Widget type message
@@ -171,6 +174,7 @@ class AlertDialogCust extends StatefulWidget {
   final DialogType type;
   final bool shuffleButtons;
   final List<DialogButton> actionButtons;
+  final Icon? icon;
 
   @override
   State<AlertDialogCust> createState() => _AlertDialogCustState();
@@ -196,7 +200,13 @@ class _AlertDialogCustState extends State<AlertDialogCust> {
           shadowColor: Colors.black,
           content: Row(
             children: [
-              if (widget.type.iconData != null && widget.type.size != null) ...[
+              if (widget.icon != null) ...[
+                widget.icon!,
+                const SizedBox(
+                  width: 4,
+                ),
+              ] else if (widget.type.iconData != null &&
+                  widget.type.size != null) ...[
                 Icon(widget.type.iconData!,
                     size: widget.type.size, color: widget.type.color),
                 const SizedBox(

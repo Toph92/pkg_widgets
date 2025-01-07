@@ -221,8 +221,15 @@ class _MyHomePageState extends State<MyHomePage> {
               // elevated button
               onPressed: () async {
                 int? nResult = await DialogCust<int>(
-                        context: context, message: 'Température du bureau ?')
-                    .custom(dialogButtons: [
+                  context: context,
+                  message: 'Température du bureau ?',
+                  altMessage: 'Très important pour le confort de tous.',
+                  icon: const Icon(
+                    Icons.ac_unit,
+                    color: Colors.blue,
+                    size: 40,
+                  ),
+                ).custom(dialogButtons: [
                   DialogButton(label: "Froid", value: 1),
                   DialogButton(label: "Parfait", value: 2, isDefault: true),
                   DialogButton(label: "Chaud", value: 3),
