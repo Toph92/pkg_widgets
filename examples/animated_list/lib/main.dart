@@ -42,6 +42,21 @@ class PersonListExample extends StatefulWidget {
 }
 
 class PersonListExampleState extends State<PersonListExample> {
+  int count = 1;
+
+  List<AnimItem<Person>> listExample = [
+    AnimItem<Person>(id: 20, child: Person('John', 'Doe')),
+    AnimItem<Person>(id: 9, child: Person('Grace', 'Black')),
+    AnimItem<Person>(id: 2, child: Person('Williams', 'Doe')),
+    AnimItem<Person>(id: 3, child: Person('Alice', 'Smith')),
+    AnimItem<Person>(id: 4, child: Person('Bob', 'Smith'), separator: true),
+    AnimItem<Person>(id: 6, child: Person('Daisy', 'Johnson')),
+    AnimItem<Person>(id: 7, child: Person('Eve', 'Jackson')),
+    AnimItem<Person>(id: 8, child: Person('Frank', 'White')),
+    AnimItem<Person>(id: 10, child: Person('Hank', 'Pym')),
+    AnimItem<Person>(id: 5, child: Person('Charlie', 'Brown')),
+  ];
+
   PersonListExampleState() {
     _personController.itemBuilder =
         (context, item, AnimationType animation, int index, bool separator) {
@@ -77,6 +92,19 @@ class PersonListExampleState extends State<PersonListExample> {
     _personController.insertItem(AnimItem(id: id, child: person));
   }
 
+  void _update() {
+    /* int id = 10;
+    final person = Person('FirstName $id ${Random().nextInt(100)}', 'LastName');
+    _personController.updateItemByIndex(5, AnimItem(id: id, child: person)); */
+
+    /* _personController.updateItemByIndex(
+        6, AnimItem(id: 7, child: Person('Eve', 'Jackson2'))); */
+
+    listExample[6] =
+        AnimItem(id: 7, child: Person('Eve', 'Jackson ${count++}'));
+    _personController.updateList(listExample);
+  }
+
   void _removePerson(int id) {
     _personController.removeItemById(id);
   }
@@ -100,19 +128,7 @@ class PersonListExampleState extends State<PersonListExample> {
   }
 
   void _fillList() {
-    final List<AnimItem<Person>> list = [
-      AnimItem<Person>(id: 20, child: Person('John', 'Doe')),
-      AnimItem<Person>(id: 9, child: Person('Grace', 'Black')),
-      AnimItem<Person>(id: 2, child: Person('Williams', 'Doe')),
-      AnimItem<Person>(id: 3, child: Person('Alice', 'Smith')),
-      AnimItem<Person>(id: 4, child: Person('Bob', 'Smith'), separator: true),
-      AnimItem<Person>(id: 6, child: Person('Daisy', 'Johnson')),
-      AnimItem<Person>(id: 7, child: Person('Eve', 'Jackson')),
-      AnimItem<Person>(id: 8, child: Person('Frank', 'White')),
-      AnimItem<Person>(id: 10, child: Person('Hank', 'Pym')),
-      AnimItem<Person>(id: 5, child: Person('Charlie', 'Brown')),
-    ];
-    _personController.updateList(list);
+    _personController.updateList(listExample);
   }
 
   @override
@@ -130,6 +146,11 @@ class PersonListExampleState extends State<PersonListExample> {
             heroTag: 'add',
             onPressed: _insert,
             child: const Icon(Icons.add),
+          ),
+          FloatingActionButton(
+            heroTag: 'edit',
+            onPressed: _update,
+            child: const Icon(Icons.edit),
           ),
           FloatingActionButton(
             heroTag: 'update',

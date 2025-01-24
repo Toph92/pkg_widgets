@@ -61,19 +61,6 @@ class AnimListController<T> {
     items.removeAt(index);
   }
 
-  void removeItemById(
-    dynamic id,
-  ) {
-    assert(itemBuilder != null);
-    assert(id != null);
-
-    int index = items.indexWhere((AnimItem item) => item.id == id);
-    assert(index != -1); // pour faire planter en dev
-    if (index != -1) {
-      removeItemByIndex(index);
-    }
-  }
-
   void updateItemByIndex(
     int index,
     AnimItem<T> item,
@@ -110,38 +97,46 @@ class AnimListController<T> {
     );
   }
 
-  void updateList(List<AnimItem<T>> newItems) {
-//    assert(idExtractor != null);
+  void removeItemById(
+    dynamic id,
+  ) {
+    assert(itemBuilder != null);
+    assert(id != null);
 
-    Set<dynamic> existingIds = items.map((item) => item.id).toSet();
-    Set<dynamic> newIds = newItems.map((item) => item.id).toSet();
+    int index = items.indexWhere((AnimItem item) => item.id == id);
+    assert(index != -1); // pour faire planter en dev
+    if (index != -1) {
+      removeItemByIndex(index);
+    }
+  }
+
+  void updateItemById(
+    dynamic id,
+  ) {
+    assert(itemBuilder != null);
+    assert(id != null);
+
+    int index = items.indexWhere((AnimItem item) => item.id == id);
+    assert(index != -1); // pour faire planter en dev
+    if (index != -1) {
+      removeItemByIndex(index);
+    }
+  }
+
+  void updateList(List<AnimItem<T>> newItems) {
+    Set<dynamic> existingIds = items.map((AnimItem<T> item) => item.id).toSet();
+    Set<dynamic> newIds = newItems.map((AnimItem<T> item) => item.id).toSet();
 
     // Trier les nouveaux éléments
     reverseOrder
         ? newItems.sort((b, a) => sortBy!(b.child, a.child))
         : newItems.sort((a, b) => sortBy!(a.child, b.child));
-
-    // Détecter les éléments modifiés
-    List<AnimItem<T>> itemsModified = [];
-    for (final newItem in newItems) {
-      final matchingOldItemIndex = items.indexWhere((oldItem) =>
-          oldItem.id == newItem.id && oldItem.hashCode != newItem.hashCode);
-
-      if (matchingOldItemIndex != -1) {
-        final oldItem = items[matchingOldItemIndex];
-
-        // Comparer par hashCode pour détecter une modification
-        if (oldItem.hashCode != newItem.hashCode) {
-          itemsModified.add(newItem);
-        }
-      }
-    }
-
-    // Mise à jour des éléments modifiés
-    for (final modifiedItem in itemsModified) {
-      final index = items.indexWhere((item) => item.id == modifiedItem.id);
-      if (index != -1) {
-        updateItemByIndex(index, modifiedItem);
+    // update modified items
+    final commonItems = existingIds.intersection(newIds);
+    for (final id in commonItems) {
+      final index = items.indexWhere((item) => item.id == id);
+      if (index != -1 && items[index].hashCode != newItems[index].hashCode) {
+        updateItemByIndex(index, newItems[index]);
       }
     }
 
