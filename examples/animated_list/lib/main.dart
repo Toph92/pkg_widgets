@@ -42,7 +42,7 @@ class PersonListExample extends StatefulWidget {
 }
 
 class PersonListExampleState extends State<PersonListExample> {
-  int count = 1;
+  int count = 100;
 
   List<AnimItem<Person>> listExample = [
     AnimItem<Person>(id: 20, child: Person('John', 'Doe')),
@@ -78,8 +78,12 @@ class PersonListExampleState extends State<PersonListExample> {
 
   final AnimListController<Person> _personController =
       AnimListController<Person>(
-    //idExtractor: (person) => person.id.toString(),
-    sortBy: (a, b) => a.firstName.compareTo(b.firstName),
+    //sortBy: (a, b) => a.firstName.compareTo(b.firstName),
+    sortBy: (a, b) {
+      print("a: ${a.firstName} b: ${b.firstName}");
+      return a.firstName.compareTo(b.firstName);
+    },
+
     //reverseOrder: true,
     separator: Divider(color: Colors.black, thickness: 2, height: 4),
   );
@@ -100,8 +104,11 @@ class PersonListExampleState extends State<PersonListExample> {
     /* _personController.updateItemByIndex(
         6, AnimItem(id: 7, child: Person('Eve', 'Jackson2'))); */
 
-    listExample[6] =
-        AnimItem(id: 7, child: Person('Eve', 'Jackson ${count++}'));
+    /* listExample[6] =
+        AnimItem(id: 7, child: Person('Eve', 'Jackson ${count++}')); */
+
+    listExample.insert(listExample.length - 1,
+        AnimItem(id: count, child: Person('BBEve', 'Jackson ${count++}')));
     _personController.updateList(listExample);
   }
 
