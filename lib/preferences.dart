@@ -33,6 +33,8 @@ class Preferences<T extends Enum> with ChangeNotifier {
             prefs[key] = sharedPrefs.getString(keyString);
           } else if (sharedPrefs.get(keyString) is double) {
             prefs[key] = sharedPrefs.getDouble(keyString);
+          } else if (sharedPrefs.get(keyString) is int) {
+            prefs[key] = sharedPrefs.getInt(keyString);
           }
         }
       }
@@ -61,6 +63,8 @@ class Preferences<T extends Enum> with ChangeNotifier {
       sharedPrefs.setString(keyString, value);
     } else if (value is double) {
       sharedPrefs.setDouble(keyString, value);
+    } else if (value is int) {
+      sharedPrefs.setInt(keyString, value);
     } else if (value == null) {
       sharedPrefs.remove(keyString);
     } else {
