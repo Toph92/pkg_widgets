@@ -1,13 +1,17 @@
 library pkg_widgets;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:io';
+/* import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io'; */
+import 'package:flutter/foundation.dart';
 
 class OS {
   static bool isMobile() {
     if (kIsWeb) return false;
-    if (Platform.isAndroid || Platform.isIOS) return true;
+    if (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS) {
+      return true;
+    }
     return false;
   }
 
@@ -18,31 +22,33 @@ class OS {
 
   static bool isDesktop() {
     if (kIsWeb) return false;
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) return true;
+    if (defaultTargetPlatform == TargetPlatform.windows ||
+        defaultTargetPlatform == TargetPlatform.linux ||
+        defaultTargetPlatform == TargetPlatform.macOS) return true;
     return false;
   }
 
   static bool isAndroid() {
     if (kIsWeb) return false;
-    if (Platform.isAndroid) return true;
+    if (defaultTargetPlatform == TargetPlatform.android) return true;
     return false;
   }
 
   static bool isIOS() {
     if (kIsWeb) return false;
-    if (Platform.isIOS) return true;
+    if (defaultTargetPlatform == TargetPlatform.iOS) return true;
     return false;
   }
 
   static bool isLinux() {
     if (kIsWeb) return false;
-    if (Platform.isLinux) return true;
+    if (defaultTargetPlatform == TargetPlatform.linux) return true;
     return false;
   }
 
   static bool isWindows() {
     if (kIsWeb) return false;
-    if (Platform.isWindows) return true;
+    if (defaultTargetPlatform == TargetPlatform.windows) return true;
     return false;
   }
 }

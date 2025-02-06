@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 class ChipUpdateNotification extends Notification {
   //final String? value;
@@ -22,7 +22,7 @@ mixin ChipMixin {
   bool displayBottomMessage = false;
 
   wdBottomMessage(String? message) => Positioned(
-        bottom: Platform.isAndroid ? 6 : 0,
+        bottom: defaultTargetPlatform == TargetPlatform.android ? 6 : 0,
         left: 34,
         child: AnimatedOpacity(
           opacity: displayBottomMessage ? 1 : 0,
