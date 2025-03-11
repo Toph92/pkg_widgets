@@ -21,7 +21,7 @@ class OS {
   }
 
   /// return forceValue if not null otherwise right boolean
-  static bool isDesktop(bool? forceValue) {
+  static bool isDesktop([bool? forceValue]) {
     if (forceValue != null) return forceValue;
     if (kIsWeb) return false;
     if (defaultTargetPlatform == TargetPlatform.windows ||
