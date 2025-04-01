@@ -20,8 +20,10 @@ class AnimListController<T> {
   Widget? separator;
   final Duration duration;
   final bool reverseOrder;
+  final ScrollController scrollController = ScrollController();
 
   void dispose() {
+    scrollController.dispose();
     items.clear();
   }
 
@@ -196,6 +198,7 @@ class AnimList<T> extends StatelessWidget {
       );
     };
     return AnimatedList(
+      controller: controller.scrollController,
       physics: noScrollable
           ? const NeverScrollableScrollPhysics()
           : const BouncingScrollPhysics(),
