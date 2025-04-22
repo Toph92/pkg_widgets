@@ -171,7 +171,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TitleBorderBox(
-                      title: 'Clients',
                       borderColor: Colors.blue,
                       child: IntrinsicHeight(
                         child: Row(

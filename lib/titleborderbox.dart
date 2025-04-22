@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 class TitleBorderBox extends StatelessWidget {
-  final String title;
+  final String? title;
   final Widget child;
   final Color borderColor;
   final Color backgroundColor;
@@ -12,8 +13,8 @@ class TitleBorderBox extends StatelessWidget {
 
   const TitleBorderBox({
     super.key,
-    required this.title,
     required this.child,
+    this.title,
     this.borderColor = Colors.blue,
     this.backgroundColor = Colors.white,
     this.borderRadius = 8.0,
@@ -24,7 +25,9 @@ class TitleBorderBox extends StatelessWidget {
       fontSize: 16,
       fontWeight: FontWeight.w600,
     ),
-  });
+  })  : assert(borderWidth > 0, 'Border width must be greater than 0'),
+        assert(borderRadius >= 0,
+            'Border radius must be greater than or equal to 0');
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +62,7 @@ class TitleBorderBox extends StatelessWidget {
 }
 
 class TitledBorderPainter extends CustomPainter {
-  final String title;
+  final String? title;
   final Color borderColor;
   final TextStyle titleStyle;
   final Color backgroundColor;
@@ -77,7 +80,14 @@ class TitledBorderPainter extends CustomPainter {
     required this.textWidth,
     required this.textHeight,
     required this.borderWidth,
-  });
+  }) {
+    if (title == null) {
+      if (kDebugMode) {
+        print(
+            "if title is null or empty, may be a better idea to use Container() instead of TitleBorderBox()");
+      }
+    }
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -111,11 +121,13 @@ class TitledBorderPainter extends CustomPainter {
     // Ligne jusqu'au début de l'espace pour le texte
     borderPath.lineTo(textLeftPosition - textPadding, titleVerticalPosition);
 
-    // Sauter l'espace du texte
-    borderPath.moveTo(
-      textLeftPosition + textWidth + textPadding,
-      titleVerticalPosition,
-    );
+    if (title != null && title!.isNotEmpty) {
+      // Sauter l'espace du texte
+      borderPath.moveTo(
+        textLeftPosition + textWidth + textPadding,
+        titleVerticalPosition,
+      );
+    }
 
     // Ligne jusqu'au coin supérieur droit
     borderPath.lineTo(size.width - borderRadius, titleVerticalPosition);
@@ -160,6 +172,7 @@ class TitledBorderPainter extends CustomPainter {
     canvas.drawPath(borderPath, borderPaint);
 
     // Dessiner le texte du titre
+    if (title == null || title!.isEmpty) return;
     final TextSpan textSpan = TextSpan(text: title, style: titleStyle);
 
     final TextPainter painter = TextPainter(
