@@ -9,7 +9,7 @@ class TitleBorderBox extends StatelessWidget {
   final double borderRadius;
   final EdgeInsets contentPadding;
   final double borderWidth;
-  final TextStyle titleStyle;
+  final TextStyle? titleStyle;
 
   const TitleBorderBox({
     super.key,
@@ -29,6 +29,12 @@ class TitleBorderBox extends StatelessWidget {
         assert(borderRadius >= 0,
             'Border radius must be greater than or equal to 0');
 
+  factory TitleBorderBox.none() {
+    return const TitleBorderBox(
+      child: SizedBox(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // On va mesurer la taille du texte pour le CustomPainter
@@ -44,7 +50,7 @@ class TitleBorderBox extends StatelessWidget {
       painter: TitledBorderPainter(
         title: title,
         borderColor: borderColor,
-        titleStyle: titleStyle,
+        titleStyle: titleStyle!,
         backgroundColor: backgroundColor,
         borderRadius: borderRadius,
         textWidth: textWidth,
