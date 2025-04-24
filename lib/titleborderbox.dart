@@ -9,7 +9,7 @@ class TitleBorderBox extends StatelessWidget {
   final double borderRadius;
   final EdgeInsets contentPadding;
   final double borderWidth;
-  final TextStyle? titleStyle;
+  final TextStyle titleStyle;
 
   const TitleBorderBox({
     super.key,
@@ -20,7 +20,11 @@ class TitleBorderBox extends StatelessWidget {
     this.borderRadius = 8.0,
     this.contentPadding = const EdgeInsets.all(16.0),
     this.borderWidth = 1.5,
-    this.titleStyle,
+    this.titleStyle = const TextStyle(
+      color: Colors.black54,
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+    ),
   })  : assert(borderWidth > 0, 'Border width must be greater than 0'),
         assert(borderRadius >= 0,
             'Border radius must be greater than or equal to 0');
@@ -40,12 +44,7 @@ class TitleBorderBox extends StatelessWidget {
       painter: TitledBorderPainter(
         title: title,
         borderColor: borderColor,
-        titleStyle: titleStyle ??
-            const TextStyle(
-              color: Colors.black54,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
+        titleStyle: titleStyle,
         backgroundColor: backgroundColor,
         borderRadius: borderRadius,
         textWidth: textWidth,
