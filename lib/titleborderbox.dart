@@ -4,11 +4,11 @@ import 'package:flutter/foundation.dart';
 class TitleBorderBox extends StatelessWidget {
   final String? title;
   final Widget child;
-  final Color borderColor;
-  final Color backgroundColor;
-  final double borderRadius;
-  final EdgeInsets contentPadding;
-  final double borderWidth;
+  final Color? borderColor;
+  final Color? backgroundColor;
+  final double? borderRadius;
+  final EdgeInsets? contentPadding;
+  final double? borderWidth;
   final TextStyle? titleStyle;
 
   const TitleBorderBox({
@@ -25,8 +25,9 @@ class TitleBorderBox extends StatelessWidget {
       fontSize: 16,
       fontWeight: FontWeight.w600,
     ),
-  })  : assert(borderWidth > 0, 'Border width must be greater than 0'),
-        assert(borderRadius >= 0,
+  })  : assert(borderWidth != null && borderWidth > 0,
+            'Border width must be greater than 0'),
+        assert(borderRadius != null && borderRadius >= 0,
             'Border radius must be greater than or equal to 0');
 
   factory TitleBorderBox.none() {
@@ -49,20 +50,27 @@ class TitleBorderBox extends StatelessWidget {
     return CustomPaint(
       painter: TitledBorderPainter(
         title: title,
-        borderColor: borderColor,
-        titleStyle: titleStyle!,
-        backgroundColor: backgroundColor,
-        borderRadius: borderRadius,
+        borderColor: borderColor ?? Colors.blue,
+        titleStyle: titleStyle ??
+            const TextStyle(
+              color: Colors.black54,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+        backgroundColor: backgroundColor ?? Colors.white,
+        borderRadius: borderRadius ?? 8.0,
         textWidth: textWidth,
         textHeight: textHeight,
-        borderWidth: borderWidth,
+        borderWidth: borderWidth ?? 1.5,
       ),
-      child: Padding(
-        padding: contentPadding.copyWith(
-          top: contentPadding.top /*+ textHeight / 2*/,
-        ),
-        child: child,
-      ),
+      child: contentPadding != null
+          ? Padding(
+              padding: contentPadding!.copyWith(
+                top: contentPadding!.top,
+              ),
+              child: child,
+            )
+          : child,
     );
   }
 }
