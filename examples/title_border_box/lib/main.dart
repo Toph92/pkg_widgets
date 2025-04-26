@@ -176,6 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         color: Colors.blue,
                         fontSize: 20,
                       ),
+                      icon: Icon(Icons.person, size: 24),
                       borderColor: Colors.blue,
                       child: IntrinsicHeight(
                         child: Row(

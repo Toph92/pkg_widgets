@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 class TitleBorderBox extends StatelessWidget {
-  final String? title;
+  final dynamic title; // Accepte String ou Widget
   final Widget child;
   final Color? borderColor;
   final Color? backgroundColor;
@@ -10,6 +10,8 @@ class TitleBorderBox extends StatelessWidget {
   final EdgeInsets? contentPadding;
   final double? borderWidth;
   final TextStyle? titleStyle;
+  final Icon? icon; // Modifié de IconData? à Icon?
+  final double iconSpacing; // Espacement entre l'icône et le texte
 
   const TitleBorderBox({
     super.key,
@@ -25,6 +27,8 @@ class TitleBorderBox extends StatelessWidget {
       fontSize: 16,
       fontWeight: FontWeight.w600,
     ),
+    this.icon, // Icône optionnelle (maintenant de type Icon?)
+    this.iconSpacing = 0.0, // Espacement par défaut entre l'icône et le texte
   })  : assert(borderWidth != null && borderWidth > 0,
             'Border width must be greater than 0'),
         assert(borderRadius != null && borderRadius >= 0,
@@ -38,39 +42,51 @@ class TitleBorderBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // On va mesurer la taille du texte pour le CustomPainter
+    String? textTitle;
+    double iconWidth = 0;
+
+    // Récupérer le texte du titre
+    if (title is String) {
+      textTitle = title as String;
+    } else if (title is Widget) {
+      // Si title est un Widget, on ne peut pas l'utiliser directement dans CustomPainter
+      textTitle = null;
+    }
+
+    // Calculer l'espace pour l'icône si elle existe
+    if (icon != null) {
+      final double iconSize = icon!.size ?? 20.0;
+      iconWidth = iconSize + iconSpacing;
+    }
+
+    // Mesurer la taille du texte pour le CustomPainter
     final TextPainter textPainter = TextPainter(
-      text: TextSpan(text: title, style: titleStyle),
+      text: TextSpan(text: textTitle, style: titleStyle),
       textDirection: TextDirection.ltr,
     )..layout();
 
-    final double textWidth = textPainter.width;
+    final double textWidth = textPainter.width + iconWidth;
     final double textHeight = textPainter.height;
 
     return CustomPaint(
       painter: TitledBorderPainter(
-        title: title,
-        borderColor: borderColor ?? Colors.blue,
-        titleStyle: titleStyle ??
-            const TextStyle(
-              color: Colors.black54,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
-        backgroundColor: backgroundColor ?? Colors.white,
-        borderRadius: borderRadius ?? 8.0,
+        title: textTitle,
+        borderColor: borderColor!,
+        titleStyle: titleStyle!,
+        backgroundColor: backgroundColor!,
+        borderRadius: borderRadius!,
         textWidth: textWidth,
         textHeight: textHeight,
-        borderWidth: borderWidth ?? 1.5,
+        borderWidth: borderWidth!,
+        icon: icon,
+        iconSpacing: iconSpacing,
       ),
-      child: contentPadding != null
-          ? Padding(
-              padding: contentPadding!.copyWith(
-                top: contentPadding!.top,
-              ),
-              child: child,
-            )
-          : child,
+      child: Padding(
+        padding: contentPadding!.copyWith(
+          top: contentPadding!.top /*+ textHeight / 2*/,
+        ),
+        child: child,
+      ),
     );
   }
 }
@@ -84,6 +100,8 @@ class TitledBorderPainter extends CustomPainter {
   final double textWidth;
   final double textHeight;
   final double borderWidth;
+  final Icon? icon;
+  final double iconSpacing;
 
   TitledBorderPainter({
     required this.title,
@@ -94,6 +112,8 @@ class TitledBorderPainter extends CustomPainter {
     required this.textWidth,
     required this.textHeight,
     required this.borderWidth,
+    this.icon,
+    this.iconSpacing = 4.0,
   }) {
     if (title == null) {
       if (kDebugMode) {
@@ -187,6 +207,39 @@ class TitledBorderPainter extends CustomPainter {
 
     // Dessiner le texte du titre
     if (title == null || title!.isEmpty) return;
+
+    double currentX = textLeftPosition;
+
+    // Dessiner l'icône si elle existe
+    if (icon != null) {
+      // Obtenir les informations de l'icône
+      final IconData iconData = icon!.icon!;
+      final Color iconColor = icon!.color ?? titleStyle.color!;
+      final double iconSize = icon!.size ?? 20.0;
+
+      final TextPainter iconPainter = TextPainter(
+        text: TextSpan(
+          text: String.fromCharCode(iconData.codePoint),
+          style: TextStyle(
+            fontSize: iconSize,
+            fontFamily: iconData.fontFamily,
+            color: iconColor,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+
+      iconPainter.layout();
+      iconPainter.paint(
+        canvas,
+        Offset(currentX, -textHeight / 2 + (textHeight - iconSize) / 2),
+      );
+
+      // Mettre à jour la position X pour le texte
+      currentX += iconSize + iconSpacing;
+    }
+
+    // Dessiner le texte
     final TextSpan textSpan = TextSpan(text: title, style: titleStyle);
 
     final TextPainter painter = TextPainter(
@@ -195,7 +248,7 @@ class TitledBorderPainter extends CustomPainter {
     );
 
     painter.layout();
-    painter.paint(canvas, Offset(textLeftPosition, -textHeight / 2));
+    painter.paint(canvas, Offset(currentX, -textHeight / 2));
   }
 
   @override
@@ -203,5 +256,3 @@ class TitledBorderPainter extends CustomPainter {
     return true;
   }
 }
-
-// Exemple d'utilisation
