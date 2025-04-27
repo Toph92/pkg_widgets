@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_lorem/flutter_lorem.dart';
-//import 'package:pext_completion/controler.dart';
-//import 'package:pkg_text_completion/text_completion.dart';
+
 import 'package:pkg_widgets/text_completion.dart';
-import 'package:pkg_widgets/text_completion_controler.dart';
 
 Uri apiSrv = Uri(
   scheme: 'https',
@@ -75,18 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     completionCtrl = TextCompletionControler<User>(
-      /*   onChangeValue: (value) {
-        //print("Value=$value");
-        if (value.length == 3 && value.substring(0, 3).toUpperCase() == 'DES') {
-          users.add(User(lastName: 'DESBOIS', firstName: 'Isabelle'));
-        }
-      }, */
-      /* onInputValueChanged: (value) {
-        //print("Value=$value");
-        if (value.length == 3 && value.substring(0, 3).toUpperCase() == 'DES') {
-          users.add(User(lastName: 'DESBOIS', firstName: 'Isabelle'));
-        }
-      }, */
       onRequestUpdateDataSource: (arCriteria) async {
         await Future.delayed(const Duration(seconds: 1));
         return <User>[
@@ -97,9 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //dataSource: users,
 
       initialListHeight: 150,
-      //offsetListWidth: -40,
       minWidthList: 200,
-      //maxWidthList: 400,
 
       onSelected: <Object>(user) {
         user = user as User;
@@ -179,76 +163,72 @@ class _MyHomePageState extends State<MyHomePage> {
                                 },
                                 child: const Text("Close")),
                           ),
-                          SizedBox(
-                            //width: 300,
-                            child: Form(
-                              key: _formKey,
-                              child: TextCompletion(
-                                //focusNode: _focus,
-                                needToBeSelected: false,
-                                validator: (value) {
-                                  value = completionCtrl.txtControler
-                                      .text; // tordu cette histoire
-                                  if (value.isEmpty || value.length < 3) {
-                                    return 'Obligatoire (min 3 caractères)';
-                                  }
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.grey.shade100,
-                                  hoverColor: Colors.white60,
-                                  isDense: true,
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      width: 2,
-                                      color: Theme.of(context)
-                                          .primaryColor, // Change this to your desired color
-                                    ),
+                          Form(
+                            key: _formKey,
+                            child: TextCompletion(
+                              needToBeSelected: false,
+                              validator: (value) {
+                                value = completionCtrl
+                                    .txtControler.text; // tordu cette histoire
+                                if (value.isEmpty || value.length < 3) {
+                                  return 'Obligatoire (min 3 caractères)';
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.grey.shade100,
+                                hoverColor: Colors.white60,
+                                isDense: true,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    width: 2,
+                                    color: Theme.of(context)
+                                        .primaryColor, // Change this to your desired color
                                   ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(
-                                      width: 1,
-                                      color: Colors
-                                          .white, // Change this to your desired color
-                                    ),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(
-                                        width: 1, color: Colors.red),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(
-                                        width: 2, color: Colors.red),
-                                  ),
-                                ).copyWith(
-                                  labelText: "Employé",
-                                  labelStyle: completionCtrl
-                                          .focusNodeTextField.hasFocus
-                                      ? TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w500,
-                                          color: Theme.of(context).primaryColor)
-                                      : completionCtrl.txtControler.text.isEmpty
-                                          ? const TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w300,
-                                              color: Colors.grey)
-                                          : TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.grey.shade500,
-                                            ),
                                 ),
-                                controler: completionCtrl,
-                                minCharacterNeeded: 3,
-                                txtStyle: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
+                                    width: 1,
+                                    color: Colors
+                                        .white, // Change this to your desired color
+                                  ),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
+                                      width: 1, color: Colors.red),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
+                                      width: 2, color: Colors.red),
+                                ),
+                              ).copyWith(
+                                labelText: "Employé",
+                                labelStyle: completionCtrl
+                                        .focusNodeTextField.hasFocus
+                                    ? TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w500,
+                                        color: Theme.of(context).primaryColor)
+                                    : completionCtrl.txtControler.text.isEmpty
+                                        ? const TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.grey)
+                                        : TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.grey.shade500,
+                                          ),
                               ),
+                              controler: completionCtrl,
+                              minCharacterNeeded: 3,
+                              txtStyle: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
                             ),
                           ),
                           ElevatedButton(
