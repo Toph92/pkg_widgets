@@ -32,7 +32,8 @@ class TitleBorderBox extends StatelessWidget {
   })  : assert(borderWidth != null && borderWidth > 0,
             'Border width must be greater than 0'),
         assert(borderRadius != null && borderRadius >= 0,
-            'Border radius must be greater than or equal to 0');
+            'Border radius must be greater than or equal to 0'),
+        assert(borderColor != null);
 
   factory TitleBorderBox.none() {
     return const TitleBorderBox(
