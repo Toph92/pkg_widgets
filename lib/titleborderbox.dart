@@ -4,12 +4,12 @@ import 'package:flutter/foundation.dart';
 class TitleBorderBox extends StatelessWidget {
   final dynamic title; // Accepte String ou Widget
   final Widget child;
-  final Color? borderColor;
-  final Color? backgroundColor;
-  final double? borderRadius;
-  final EdgeInsets? contentPadding;
-  final double? borderWidth;
-  final TextStyle? titleStyle;
+  final Color borderColor;
+  final Color backgroundColor;
+  final double borderRadius;
+  final EdgeInsets contentPadding;
+  final double borderWidth;
+  final TextStyle titleStyle;
   final Icon? icon; // Modifié de IconData? à Icon?
   final double iconSpacing; // Espacement entre l'icône et le texte
 
@@ -29,13 +29,11 @@ class TitleBorderBox extends StatelessWidget {
     ),
     this.icon, // Icône optionnelle (maintenant de type Icon?)
     this.iconSpacing = 0.0, // Espacement par défaut entre l'icône et le texte
-  })  : assert(borderWidth != null && borderWidth > 0,
-            'Border width must be greater than 0'),
-        assert(borderRadius != null && borderRadius >= 0,
-            'Border radius must be greater than or equal to 0'),
-        assert(borderColor != null);
+  })  : assert(borderWidth > 0, 'Border width must be greater than 0'),
+        assert(borderRadius >= 0,
+            'Border radius must be greater than or equal to 0');
 
-  factory TitleBorderBox.none() {
+  factory TitleBorderBox.none(/*{super.key}*/) {
     return const TitleBorderBox(
       child: SizedBox(),
     );
@@ -72,19 +70,19 @@ class TitleBorderBox extends StatelessWidget {
     return CustomPaint(
       painter: TitledBorderPainter(
         title: textTitle,
-        borderColor: borderColor!,
-        titleStyle: titleStyle!,
-        backgroundColor: backgroundColor!,
-        borderRadius: borderRadius!,
+        borderColor: borderColor,
+        titleStyle: titleStyle,
+        backgroundColor: backgroundColor,
+        borderRadius: borderRadius,
         textWidth: textWidth,
         textHeight: textHeight,
-        borderWidth: borderWidth!,
+        borderWidth: borderWidth,
         icon: icon,
         iconSpacing: iconSpacing,
       ),
       child: Padding(
-        padding: contentPadding!.copyWith(
-          top: contentPadding!.top /*+ textHeight / 2*/,
+        padding: contentPadding.copyWith(
+          top: contentPadding.top /*+ textHeight / 2*/,
         ),
         child: child,
       ),
