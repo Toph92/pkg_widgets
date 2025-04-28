@@ -90,8 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
         //print(user.firstName);
         completionCtrl.value = "${user.lastName} ${user.firstName}";
       },
-    );
-    completionCtrl.focusNodeTextField.addListener(refresh);
+    )..focusNodeTextField.addListener(refresh);
     super.initState();
   }
 
