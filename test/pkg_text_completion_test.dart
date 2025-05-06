@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:pkg_widgets/text_completion_controler.dart';
+import 'package:pkg_widgets/text_completion.dart';
 
 void main() {
   test("removeAccents", () {
