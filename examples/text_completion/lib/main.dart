@@ -66,13 +66,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late TextCompletionControler<User> completionCtrl;
+  late TextCompletionController<User> completionCtrl;
   TextEditingController prenomCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    completionCtrl = TextCompletionControler<User>(
+    completionCtrl = TextCompletionController<User>(
       onRequestUpdateDataSource: (arCriteria) async {
         await Future.delayed(const Duration(seconds: 1));
         return <User>[
@@ -168,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               needToBeSelected: false,
                               validator: (value) {
                                 value = completionCtrl
-                                    .txtControler.text; // tordu cette histoire
+                                    .txtController.text; // tordu cette histoire
                                 if (value.isEmpty || value.length < 3) {
                                   return 'Obligatoire (min 3 caractères)';
                                 }
@@ -213,7 +213,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         fontSize: 17,
                                         fontWeight: FontWeight.w500,
                                         color: Theme.of(context).primaryColor)
-                                    : completionCtrl.txtControler.text.isEmpty
+                                    : completionCtrl.txtController.text.isEmpty
                                         ? const TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.w300,
@@ -224,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             color: Colors.grey.shade500,
                                           ),
                               ),
-                              controler: completionCtrl,
+                              controller: completionCtrl,
                               minCharacterNeeded: 3,
                               txtStyle: const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.w500),
@@ -320,19 +320,19 @@ class User extends SearchEntry {
   int get hashCode => firstName.hashCode ^ lastName.hashCode;
 
   @override
-  Widget title(TextCompletionControler controler) {
+  Widget title(TextCompletionController controller) {
     return Row(
       children: [
         Expanded(
           flex: 1,
           child: Row(
-              children: controler.hightLightText(
+              children: controller.hightLightText(
             lastName,
           )),
         ),
         Expanded(
           flex: 1,
-          child: Row(children: controler.hightLightText(firstName ?? '')),
+          child: Row(children: controller.hightLightText(firstName ?? '')),
         ),
       ],
     );

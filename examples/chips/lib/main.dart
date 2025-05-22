@@ -34,10 +34,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  ChipTextControler userControler = ChipTextControler();
-  ChipTextControler hourControler = ChipTextControler();
-  ChipDateControler dateControler = ChipDateControler();
-  TextEditingController textControleur = TextEditingController();
+  ChipTextController userController = ChipTextController();
+  ChipTextController hourController = ChipTextController();
+  ChipDateController dateController = ChipDateController();
+  TextEditingController textController = TextEditingController();
   bool bHeureVisible = true;
 
   @override
@@ -55,18 +55,18 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(textControleur.text),
+              child: Text(textController.text),
             ),
             SizedBox(
                 width: 100,
                 child: TextField(
-                  controller: textControleur,
+                  controller: textController,
                   onChanged: (value) {
                     setState(() {});
                   },
                 )),
             const SizedBox(height: 30, child: VerticalDivider()),
-            Text(userControler.textValue ?? '?'),
+            Text(userController.textValue ?? '?'),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: NotificationListener(
@@ -75,8 +75,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     case ChipUpdateNotification _:
                       /* debugPrint(
                           "Notif: ${(notification as ChipUpdateNotification).value}"); */
-                      debugPrint("value=${userControler.textValue}");
-                      //userControler.textValue = (notification).value;
+                      debugPrint("value=${userController.textValue}");
+
                       setState(() {});
                       break;
                     case ChipDeleteNotification _:
@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   return true;
                 },
                 child: ChipText(
-                  controler: userControler,
+                  controller: userController,
                   bgColor: Colors.blue.shade200,
                   emptyMessage: "Utilisateur ?",
                   tooltipMessageEmpty: "Saisir une partie du nom ou du prénom",
@@ -113,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ChipText(
-                    controler: hourControler,
+                    controller: hourController,
                     bgColor: Colors.orange.shade200,
                     removable: true,
                     emptyMessage: "Heure ?",
@@ -128,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     case ChipUpdateNotification _:
                       /*debugPrint(
                           "Notif: ${(notification as ChipUpdateNotification).value}");*/
-                      debugPrint("value=${dateControler.dateValue}");
+                      debugPrint("value=${dateController.dateValue}");
                       break;
                     case ChipDeleteNotification _:
                       debugPrint("Delete");
@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   return true;
                 },
                 child: ChipDate(
-                  controler: dateControler,
+                  controller: dateController,
                   bgColor: Colors.lightGreen,
                   emptyMessage: "Date début ?",
                   bottomMessage: "Date début",
@@ -169,13 +169,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    userControler.textValue = "Hello";
-                    //userControler.textValue = null;
-
-                    dateControler.dateValue =
+                    userController.textValue = "Hello";
+                    dateController.dateValue =
                         DateTime.now().add(const Duration(days: 2));
-                    //dateControler.dateValue = null;
-                    //setState(() {});
                   },
                   child: const Text("Set Value"),
                 ))

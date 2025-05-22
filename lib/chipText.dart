@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'chipCommon.dart';
 
-class ChipTextControler extends ChangeNotifier {
+class ChipTextController extends ChangeNotifier {
   String? _textValue;
   String? get textValue => _textValue;
 
@@ -16,7 +16,7 @@ class ChipTextControler extends ChangeNotifier {
 class ChipText extends StatefulWidget {
   ChipText(
       {super.key,
-      required this.controler,
+      required this.controller,
       this.bgColor = Colors.white,
       this.textFieldWidth = 180,
       this.emptyMessage = "Clic pour saisir",
@@ -31,7 +31,7 @@ class ChipText extends StatefulWidget {
       this.disabledColor,
       this.item});
 
-  ChipTextControler? controler;
+  ChipTextController? controller;
   final Color bgColor;
   final double textFieldWidth;
   final String emptyMessage;
@@ -63,8 +63,8 @@ class _ChipTextState extends State<ChipText> with ChipMixin {
     focus.addListener(() {
       if (focus.hasFocus == false) {
         controller.text == ""
-            ? widget.controler?._textValue = null
-            : widget.controler?._textValue = controller.text;
+            ? widget.controller?._textValue = null
+            : widget.controller?._textValue = controller.text;
         editMode = false;
         setState(() {});
       }
@@ -75,11 +75,11 @@ class _ChipTextState extends State<ChipText> with ChipMixin {
         setState(() {});
       }
     });
-    widget.controler?.addListener(() {
+    widget.controller?.addListener(() {
       if (!mounted) return;
-      widget.controler?.textValue == null
+      widget.controller?.textValue == null
           ? controller.clear()
-          : controller.text = widget.controler?.textValue ?? "";
+          : controller.text = widget.controller?.textValue ?? "";
       setState(() {});
       ChipUpdateNotification(item: widget.item).dispatch(context);
     });
@@ -93,15 +93,12 @@ class _ChipTextState extends State<ChipText> with ChipMixin {
     widget._visibleNotif?.dispose();
     widget._visibleNotif = null;
 
-    //widget.controler?.dispose();
-    //widget.controler = null;
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    widget.controler?.textValue != null &&
+    widget.controller?.textValue != null &&
             widget.bottomMessage != null &&
             editMode == false
         ? displayBottomMessage = true
@@ -131,9 +128,9 @@ class _ChipTextState extends State<ChipText> with ChipMixin {
                       child: TextField(
                           onChanged: (value) {
                             if (value == "") {
-                              widget.controler?._textValue = null;
+                              widget.controller?._textValue = null;
                             } else {
-                              widget.controler?._textValue = value;
+                              widget.controller?._textValue = value;
                             }
                             ChipUpdateNotification(item: widget.item)
                                 .dispatch(context);
@@ -181,7 +178,7 @@ class _ChipTextState extends State<ChipText> with ChipMixin {
                         visualDensity: const VisualDensity(vertical: 0),
                         backgroundColor: widget.bgColor,
                         labelPadding: const EdgeInsets.all(2.0),
-                        color: MaterialStatePropertyAll(widget.bgColor),
+                        color: WidgetStatePropertyAll(widget.bgColor),
                         avatar: Icon(
                           widget.icon,
                           color: widget.iconColor ??
@@ -191,10 +188,10 @@ class _ChipTextState extends State<ChipText> with ChipMixin {
                         deleteButtonTooltipMessage: widget.deleteTooltipMessage,
                         deleteIcon: null,
                         onDeleted: widget.removable ||
-                                widget.controler?.textValue != null
+                                widget.controller?.textValue != null
                             ? () {
-                                if (widget.controler?.textValue != null) {
-                                  widget.controler?._textValue = null;
+                                if (widget.controller?.textValue != null) {
+                                  widget.controller?._textValue = null;
                                   controller.clear();
                                   ChipUpdateNotification(item: widget.item)
                                       .dispatch(context);
@@ -206,7 +203,7 @@ class _ChipTextState extends State<ChipText> with ChipMixin {
                             : null,
                         label: MouseRegion(
                           cursor: SystemMouseCursors.click,
-                          child: widget.controler?.textValue == null
+                          child: widget.controller?.textValue == null
                               ? FittedBox(
                                   child: Row(
                                     children: [
@@ -218,7 +215,7 @@ class _ChipTextState extends State<ChipText> with ChipMixin {
                                             fontStyle: FontStyle.italic),
                                       ),
                                       SizedBox(
-                                          width: widget.controler?.textValue ==
+                                          width: widget.controller?.textValue ==
                                                       null &&
                                                   widget.removable == false
                                               ? 10
@@ -229,7 +226,7 @@ class _ChipTextState extends State<ChipText> with ChipMixin {
                               : Padding(
                                   padding: const EdgeInsets.only(bottom: 2),
                                   child:
-                                      Text(widget.controler?.textValue ?? ""),
+                                      Text(widget.controller?.textValue ?? ""),
                                 ),
                         ),
                       ),

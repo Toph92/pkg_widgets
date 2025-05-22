@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'chipCommon.dart';
 
-class ChipDateControler extends ChangeNotifier {
+class ChipDateController extends ChangeNotifier {
   DateTime? _dateValue;
   DateTime? get dateValue => _dateValue;
 
@@ -20,7 +20,7 @@ class ChipDateControler extends ChangeNotifier {
 class ChipDate extends StatefulWidget {
   ChipDate(
       {super.key,
-      required this.controler,
+      required this.controller,
       this.bgColor = Colors.white,
       this.textFieldWidth = 180,
       this.emptyMessage = "Clic pour saisir",
@@ -36,7 +36,7 @@ class ChipDate extends StatefulWidget {
       this.disabledColor,
       this.item});
 
-  ChipDateControler? controler;
+  ChipDateController? controller;
   final Color bgColor;
   final double textFieldWidth;
   final String emptyMessage;
@@ -88,16 +88,12 @@ class _ChipDateState extends State<ChipDate> with ChipMixin {
 
     widget._valueNotif?.dispose();
     widget._valueNotif = null;
-
-    //widget.controler?.dispose();
-    //widget.controler = null;
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    widget.controler?.dateValue != null && widget.bottomMessage != null
+    widget.controller?.dateValue != null && widget.bottomMessage != null
         ? displayBottomMessage = true
         : displayBottomMessage = false;
 
@@ -106,11 +102,11 @@ class _ChipDateState extends State<ChipDate> with ChipMixin {
             children: [
               GestureDetector(
                 onTap: () async {
-                  await _selectDate(context, widget.controler?.dateValue)
+                  await _selectDate(context, widget.controller?.dateValue)
                       .then((value) {
                     setState(() {
                       if (value != null) {
-                        widget.controler?.dateValue = value;
+                        widget.controller?.dateValue = value;
                         ChipUpdateNotification(item: widget.item)
                             .dispatch(context);
                         //setState(() {});
@@ -126,13 +122,13 @@ class _ChipDateState extends State<ChipDate> with ChipMixin {
                     visualDensity: const VisualDensity(vertical: 0),
                     backgroundColor: widget.bgColor,
                     labelPadding: const EdgeInsets.all(2.0),
-                    color: MaterialStatePropertyAll(widget.bgColor),
+                    color: WidgetStatePropertyAll(widget.bgColor),
                     deleteIconColor: Colors.grey.shade700,
                     onDeleted:
-                        widget.removable || widget.controler?.dateValue != null
+                        widget.removable || widget.controller?.dateValue != null
                             ? () {
-                                if (widget.controler?.dateValue != null) {
-                                  widget.controler?.dateValue = null;
+                                if (widget.controller?.dateValue != null) {
+                                  widget.controller?.dateValue = null;
                                   ChipUpdateNotification(item: widget.item)
                                       .dispatch(context);
                                   setState(() {});
@@ -151,7 +147,7 @@ class _ChipDateState extends State<ChipDate> with ChipMixin {
                     ),
                     label: MouseRegion(
                       cursor: SystemMouseCursors.click,
-                      child: widget.controler?.dateValue == null
+                      child: widget.controller?.dateValue == null
                           ? FittedBox(
                               child: Row(
                                 children: [
@@ -163,18 +159,18 @@ class _ChipDateState extends State<ChipDate> with ChipMixin {
                                         fontStyle: FontStyle.italic),
                                   ),
                                   SizedBox(
-                                      width:
-                                          widget.controler?.dateValue == null &&
-                                                  widget.removable == false
-                                              ? 10
-                                              : 0),
+                                      width: widget.controller?.dateValue ==
+                                                  null &&
+                                              widget.removable == false
+                                          ? 10
+                                          : 0),
                                 ],
                               ),
                             )
-                          : widget.controler != null &&
-                                  widget.controler!.dateValue != null
+                          : widget.controller != null &&
+                                  widget.controller!.dateValue != null
                               ? Text(DateFormat('d/M/y')
-                                  .format(widget.controler!.dateValue!))
+                                  .format(widget.controller!.dateValue!))
                               : const SizedBox(),
                     ),
                     //padding: const EdgeInsets.symmetric(horizontal: 0),

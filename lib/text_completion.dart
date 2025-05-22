@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 class TextCompletion extends StatefulWidget {
   const TextCompletion({
     super.key,
-    required this.controler,
+    required this.controller,
     this.minCharacterNeeded = 1,
     this.labelText = "",
     this.labelStyle,
@@ -18,7 +18,7 @@ class TextCompletion extends StatefulWidget {
     required this.decoration,
   });
 
-  final TextCompletionControler controler;
+  final TextCompletionController controller;
   final int minCharacterNeeded;
 
   final String labelText;
@@ -38,7 +38,7 @@ class TextCompletion extends StatefulWidget {
 }
 
 class _TextCompletionState extends State<TextCompletion> {
-  final GlobalKey textKey = GlobalKey();
+  final GlobalKey _textKey = GlobalKey();
   OverlayEntry? overlayEntry;
   final GlobalKey overlayKey = GlobalKey();
   double? textFieldWidth;
@@ -54,40 +54,40 @@ class _TextCompletionState extends State<TextCompletion> {
   void initState() {
     assert(widget.minCharacterNeeded > 0);
 
-    widget.controler.txtFieldNotifier.addListener(listenerOnValue);
-    widget.controler.listWidthNotifier.addListener(listenerOnSetWidth);
-    widget.controler.closeNotifier.addListener(listenerOnClose);
+    widget.controller.txtFieldNotifier.addListener(listenerOnValue);
+    widget.controller.listWidthNotifier.addListener(listenerOnSetWidth);
+    widget.controller.closeNotifier.addListener(listenerOnClose);
 
-    widget.controler.txtControler.text =
-        widget.controler.txtFieldNotifier.value ?? '';
+    widget.controller.txtController.text =
+        widget.controller.txtFieldNotifier.value ?? '';
 
-    widget.controler.focusNodeTextField.addListener(listenerOnFocus);
+    widget.controller.focusNodeTextField.addListener(listenerOnFocus);
     super.initState();
   }
 
   void listenerOnValue() {
-    widget.controler.txtControler.text =
-        widget.controler.txtFieldNotifier.value ?? '';
+    widget.controller.txtController.text =
+        widget.controller.txtFieldNotifier.value ?? '';
   }
 
   void listenerOnSetWidth() {
     if (overlayEntry != null) {
-      showPopup(key: textKey);
+      _openOverlayPopup(key: _textKey);
     }
   }
 
   void listenerOnClose() {
-    removeHighlightOverlay();
-    widget.controler.closeNotifier.value = false;
+    _closeOverlayPopup();
+    widget.controller.closeNotifier.value = false;
   }
 
   void listenerOnFocus() {
-    if (widget.controler.focusNodeTextField.hasFocus == false &&
-        widget.controler.selectedFromList == false &&
-        widget.controler.txtControler.text.isNotEmpty) {
+    if (widget.controller.focusNodeTextField.hasFocus == false &&
+        widget.controller.selectedFromList == false &&
+        widget.controller.txtController.text.isNotEmpty) {
       if (widget.needToBeSelected) {
         hintMessage = "Sélection liste obligatoire";
-        widget.controler.txtControler.text = "";
+        widget.controller.txtController.text = "";
       }
     } else {
       hintMessage = null;
@@ -96,9 +96,9 @@ class _TextCompletionState extends State<TextCompletion> {
 
   @override
   void dispose() {
-    widget.controler.txtFieldNotifier.removeListener(listenerOnValue);
-    widget.controler.listWidthNotifier.removeListener(listenerOnSetWidth);
-    widget.controler.closeNotifier.removeListener(listenerOnClose);
+    widget.controller.txtFieldNotifier.removeListener(listenerOnValue);
+    widget.controller.listWidthNotifier.removeListener(listenerOnSetWidth);
+    widget.controller.closeNotifier.removeListener(listenerOnClose);
     super.dispose();
   }
 
@@ -114,8 +114,8 @@ class _TextCompletionState extends State<TextCompletion> {
       // 2 layout builder, pas 1 de trop ?
       child: LayoutBuilder(builder: (context, BoxConstraints constraints) {
         textFieldWidth = constraints.maxWidth;
-        widget.controler.listWidthNotifier.value ??=
-            widget.controler.getPopupListWidth(constraints.maxWidth);
+        widget.controller.listWidthNotifier.value ??=
+            widget.controller.getPopupListWidth(constraints.maxWidth);
         return Stack(
           children: [
             Padding(
@@ -125,18 +125,18 @@ class _TextCompletionState extends State<TextCompletion> {
                 return NotificationListener<SizeChangedLayoutNotification>(
                   onNotification: (notification) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      widget.controler.listWidthNotifier.value = widget
-                          .controler
+                      widget.controller.listWidthNotifier.value = widget
+                          .controller
                           .getPopupListWidth(constraints.maxWidth);
                       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-                      widget.controler.listWidthNotifier.notifyListeners();
+                      widget.controller.listWidthNotifier.notifyListeners();
                     });
                     return false;
                   },
                   child: SizeChangedLayoutNotifier(
                     child: Builder(builder: (context) {
                       return FormField(
-                          initialValue: widget.controler.txtControler.text,
+                          initialValue: widget.controller.txtController.text,
                           autovalidateMode: AutovalidateMode.always,
                           validator: widget.validator,
                           key: _keyFormField,
@@ -145,12 +145,12 @@ class _TextCompletionState extends State<TextCompletion> {
                             return Stack(
                               children: [
                                 TextFormField(
-                                  key: textKey,
+                                  key: _textKey,
                                   focusNode:
-                                      widget.controler.focusNodeTextField,
+                                      widget.controller.focusNodeTextField,
                                   decoration: widget.decoration.copyWith(
                                       isDense: false,
-                                      suffixIcon: widget.controler
+                                      suffixIcon: widget.controller
                                                   .dataSourceFiltered ==
                                               null
                                           ? Transform.scale(
@@ -163,12 +163,12 @@ class _TextCompletionState extends State<TextCompletion> {
                                                         Color>(Colors.blue),
                                               ),
                                             )
-                                          : widget.controler.txtControler.text
+                                          : widget.controller.txtController.text
                                                       .isNotEmpty &&
                                                   (_isDesktop()
                                                       ? _hovering
                                                       : widget
-                                                          .controler
+                                                          .controller
                                                           .focusNodeTextField
                                                           .hasFocus)
                                               ? IconButton(
@@ -177,8 +177,8 @@ class _TextCompletionState extends State<TextCompletion> {
                                                           .suffixDeleteIcon ??
                                                       const Icon(Icons.clear),
                                                   onPressed: () {
-                                                    widget
-                                                        .controler.txtControler
+                                                    widget.controller
+                                                        .txtController
                                                         .clear();
                                                     widget
                                                         .onSuffixDeleteIconPressed
@@ -186,8 +186,8 @@ class _TextCompletionState extends State<TextCompletion> {
                                                     _keyFormField.currentState
                                                         ?.validate();
                                                     hintMessage = null;
-                                                    removeHighlightOverlay();
-                                                    widget.controler
+                                                    _closeOverlayPopup();
+                                                    widget.controller
                                                         .focusNodeTextField
                                                         .requestFocus();
 
@@ -197,10 +197,10 @@ class _TextCompletionState extends State<TextCompletion> {
                                                   },
                                                 )
                                               : null),
-                                  controller: widget.controler.txtControler,
+                                  controller: widget.controller.txtController,
                                   onChanged: (value) {
-                                    widget.controler.onInputValueChanged?.call(
-                                        widget.controler.txtControler.text);
+                                    widget.controller.onInputValueChanged?.call(
+                                        widget.controller.txtController.text);
 
                                     RenderBox renderBox =
                                         context.findRenderObject() as RenderBox;
@@ -265,13 +265,13 @@ class _TextCompletionState extends State<TextCompletion> {
   }
 
   void onChangedTxtCompletion(String value) {
-    widget.controler.selectedFromList = false;
+    widget.controller.selectedFromList = false;
     if (value.trim().length >= widget.minCharacterNeeded) {
-      widget.controler.updateCriteria(value);
-      udpateResults();
+      widget.controller.updateCriteria(value);
+      _udpateResults();
     } else {
-      removeHighlightOverlay();
-      if (widget.controler.txtControler.text.isNotEmpty &&
+      _closeOverlayPopup();
+      if (widget.controller.txtController.text.isNotEmpty &&
           widget.minCharacterNeeded > 0) {
         hintMessage =
             "${widget.minCharacterNeeded} caractère${widget.minCharacterNeeded > 1 ? 's' : ''} min.";
@@ -279,7 +279,7 @@ class _TextCompletionState extends State<TextCompletion> {
         hintMessage = null;
       }
     }
-    widget.controler.onInputValueChangedProcessed?.call(value);
+    widget.controller.onInputValueChangedProcessed?.call(value);
     _refresh();
   }
 
@@ -293,19 +293,19 @@ class _TextCompletionState extends State<TextCompletion> {
     }
   }
 
-  Future<void> udpateResults() async {
-    await widget.controler.updateResultset();
-    if (widget.controler.dataSourceFiltered!.isNotEmpty) {
+  Future<void> _udpateResults() async {
+    await widget.controller.updateResultset();
+    if (widget.controller.dataSourceFiltered!.isNotEmpty) {
       hintMessage = null;
-      showPopup(key: textKey);
+      _openOverlayPopup(key: _textKey);
     } else {
       hintMessage = "Aucun résultat";
-      removeHighlightOverlay();
+      _closeOverlayPopup();
     }
     _refresh();
   }
 
-  void showPopup({required GlobalKey key}) {
+  void _openOverlayPopup({required GlobalKey key}) {
     RenderBox buttonRenderBox =
         key.currentContext!.findRenderObject() as RenderBox;
     createHighlightOverlay(
@@ -313,7 +313,7 @@ class _TextCompletionState extends State<TextCompletion> {
     );
   }
 
-  void removeHighlightOverlay() {
+  void _closeOverlayPopup() {
     overlayEntry?.remove();
     overlayEntry?.dispose();
     overlayEntry = null;
@@ -328,7 +328,7 @@ class _TextCompletionState extends State<TextCompletion> {
     //print("Hello");
 
     // Remove the existing OverlayEntry.
-    removeHighlightOverlay();
+    _closeOverlayPopup();
 
     assert(overlayEntry == null);
 
@@ -350,8 +350,8 @@ class _TextCompletionState extends State<TextCompletion> {
               type: MaterialType.transparency,
               child: Container(
                 width:
-                    widget.controler.listWidthNotifier.value ?? textFieldWidth,
-                height: widget.controler.initialListHeight ?? 100,
+                    widget.controller.listWidthNotifier.value ?? textFieldWidth,
+                height: widget.controller.initialListHeight ?? 100,
                 decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
@@ -377,9 +377,9 @@ class _TextCompletionState extends State<TextCompletion> {
                           padding: const EdgeInsets.all(4.0),
                           child: ListView.separated(
                             //shrinkWrap: true,
-                            itemCount: widget.controler.dataSourceFiltered !=
+                            itemCount: widget.controller.dataSourceFiltered !=
                                     null
-                                ? widget.controler.dataSourceFiltered!.length
+                                ? widget.controller.dataSourceFiltered!.length
                                 : 0,
                             separatorBuilder: (context, index) => const Divider(
                               height: 3,
@@ -399,16 +399,16 @@ class _TextCompletionState extends State<TextCompletion> {
                                     dense: false,
                                     hoverColor: Colors.yellow,
                                     onTap: () {
-                                      widget.controler.onSelected?.call(widget
-                                          .controler
+                                      widget.controller.onSelected?.call(widget
+                                          .controller
                                           .dataSourceFiltered![index]);
-                                      removeHighlightOverlay();
-                                      widget.controler.selectedFromList = true;
+                                      _closeOverlayPopup();
+                                      widget.controller.selectedFromList = true;
                                       hintMessage = null;
                                       _refresh();
                                     },
                                     leading: widget
-                                            .controler
+                                            .controller
                                             .dataSourceFiltered![index]
                                             .fuzzySearchResult
                                         ? Icon(
@@ -416,7 +416,7 @@ class _TextCompletionState extends State<TextCompletion> {
                                             size: 24,
                                             // les ravages de l'alcool :
                                             color: Colors.blue.withOpacity(
-                                                (opa = ((widget.controler.dataSourceFiltered![
+                                                (opa = ((widget.controller.dataSourceFiltered![
                                                                         index])
                                                                     .fuzzyScore ??
                                                                 1.0) *
@@ -427,8 +427,8 @@ class _TextCompletionState extends State<TextCompletion> {
                                           )
                                         : const SizedBox(),
                                     title: widget
-                                        .controler.dataSourceFiltered![index]
-                                        .title(widget.controler)),
+                                        .controller.dataSourceFiltered![index]
+                                        .title(widget.controller)),
                               );
                             },
                           ),
@@ -437,13 +437,13 @@ class _TextCompletionState extends State<TextCompletion> {
                       const Divider(
                         height: 1,
                       ),
-                      if (widget.controler.dataSourceFiltered != null)
+                      if (widget.controller.dataSourceFiltered != null)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
                           child: Row(
                             children: [
                               Text(
-                                "${widget.controler.dataSourceFiltered!.length}",
+                                "${widget.controller.dataSourceFiltered!.length}",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w500),
                               ),
@@ -451,14 +451,14 @@ class _TextCompletionState extends State<TextCompletion> {
                                 width: 4,
                               ),
                               Text(
-                                "résultat${widget.controler.dataSourceFiltered!.length > 1 ? 's' : ''}",
+                                "résultat${widget.controller.dataSourceFiltered!.length > 1 ? 's' : ''}",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w400,
                                     color: Colors.grey),
                               ),
-                              if (widget.controler.dataSourceFiltered!
+                              if (widget.controller.dataSourceFiltered!
                                       .isNotEmpty &&
-                                  widget.controler.dataSourceFiltered!.first
+                                  widget.controller.dataSourceFiltered!.first
                                       .fuzzySearchResult) ...[
                                 const SizedBox(
                                   width: 10,
@@ -473,15 +473,15 @@ class _TextCompletionState extends State<TextCompletion> {
                                 ),
                               ],
                               const Expanded(child: SizedBox()),
-                              if (widget.controler.durationLastRequest !=
+                              if (widget.controller.durationLastRequest !=
                                       null &&
-                                  widget.controler.durationLastRequest!
+                                  widget.controller.durationLastRequest!
                                           .inMilliseconds >
                                       20 &&
                                   Platform.isAndroid == false &&
                                   Platform.isIOS == false) ...[
                                 Text(
-                                  "${widget.controler.durationLastRequest!.inMilliseconds} ms",
+                                  "${widget.controller.durationLastRequest!.inMilliseconds} ms",
                                   style: const TextStyle(
                                       color: Colors.grey, fontSize: 10),
                                 ),
@@ -568,8 +568,8 @@ class CacheManager<T> {
   }
 }
 
-class TextCompletionControler<T extends SearchEntry> {
-  TextCompletionControler({
+class TextCompletionController<T extends SearchEntry> {
+  TextCompletionController({
     this.dataSource,
     this.onRequestUpdateDataSource,
     this.fuzzySearch = true,
@@ -599,7 +599,7 @@ class TextCompletionControler<T extends SearchEntry> {
   List<String>? _arCriteria;
   bool fuzzySearch;
   bool selectedFromList = false; // true if selected in list
-  TextEditingController txtControler = TextEditingController();
+  TextEditingController txtController = TextEditingController();
 
   /// set text value to TextField
   set value(String value) {
@@ -673,7 +673,7 @@ class TextCompletionControler<T extends SearchEntry> {
     txtFieldNotifier.dispose();
     listWidthNotifier.dispose();
     closeNotifier.dispose();
-    txtControler.dispose();
+    txtController.dispose();
     onSelected = null;
     focusNodeTextField.removeListener(onFocused);
     focusNodeTextField.dispose();
@@ -857,7 +857,7 @@ class TextCompletionControler<T extends SearchEntry> {
 }
 
 class SearchEntry {
-  Widget title(TextCompletionControler controler) =>
+  Widget title(TextCompletionController controller) =>
       const Text("to be overridden");
 
   late String sText;
