@@ -75,10 +75,40 @@ class _MyHomePageState extends State<MyHomePage> {
     completionCtrl = TextCompletionController<User>(
       onRequestUpdateDataSource: (arCriteria) async {
         await Future.delayed(const Duration(seconds: 1));
-        return <User>[
-          User(firstName: 'Christophe', lastName: 'DESBOIS'),
-          User(firstName: 'Maxime', lastName: 'DESBOIS'),
+        // Liste de prénoms et noms réalistes
+        final List<Map<String, String>> realNames = [
+          {'first': 'Sophie', 'last': 'MARTIN'},
+          {'first': 'Lucas', 'last': 'DUBOIS'},
+          {'first': 'Emma', 'last': 'LEFEVRE'},
+          {'first': 'Louis', 'last': 'MOREAU'},
+          {'first': 'Chloé', 'last': 'GIRARD'},
+          {'first': 'Nathan', 'last': 'LAMBERT'},
+          {'first': 'Camille', 'last': 'ROUX'},
+          {'first': 'Léo', 'last': 'FONTAINE'},
+          {'first': 'Manon', 'last': 'BENOIT'},
+          {'first': 'Hugo', 'last': 'BARBIER'},
+          {'first': 'Lola', 'last': 'GARNIER'},
+          {'first': 'Jules', 'last': 'MARCHAND'},
+          {'first': 'Inès', 'last': 'GIRAUD'},
+          {'first': 'Gabriel', 'last': 'PICHON'},
+          {'first': 'Léa', 'last': 'BOURGEOIS'},
+          {'first': 'Arthur', 'last': 'CHEVALIER'},
+          {'first': 'Zoé', 'last': 'COLLET'},
+          {'first': 'Ethan', 'last': 'LEMOINE'},
+          {'first': 'Alice', 'last': 'RENAUD'},
+          {'first': 'Christophe', 'last': 'DESBOIS'},
+          {'first': 'Maxime', 'last': 'DESBOIS'},
+          {'first': 'Christelle', 'last': 'DAUTREMAY'},
+          {'first': 'Xenus', 'last': 'LE DUC'},
+          {'first': 'Albert', 'last': 'DUPONT'},
+          {'first': 'Pierre-Henri', 'last': 'DURAND'},
+          {'first': 'Fabrice', 'last': 'DEBUS'},
+          {'first': 'Xavier', 'last': 'GIBOULOT'},
+          {'first': 'Pascal', 'last': 'VEYRET'},
         ];
+        return realNames
+            .map((e) => User(firstName: e['first'], lastName: e['last']!))
+            .toList();
       },
       //dataSource: users,
 
@@ -266,7 +296,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-List<User> users = [
+/* List<User> users = [
   User(lastName: 'Père', firstName: 'Noël'),
   User(lastName: 'Père', firstName: 'Noel'),
   User(lastName: 'Père', firstName: 'NOEL'),
@@ -283,7 +313,7 @@ List<User> users = [
   User(lastName: 'VEYRET', firstName: 'Maxime'),
   User(lastName: 'LEGLAND sans prénom'),
   User(lastName: 'Desbois', firstName: 'élodie'),
-];
+]; */
 
 class User extends SearchEntry {
   final String? firstName;
