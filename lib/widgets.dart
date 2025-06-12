@@ -6,7 +6,32 @@ import 'dart:io'; */
 import 'package:flutter/foundation.dart';
 
 class OS {
-  static bool isMobile() {
+  bool android = false;
+  bool ios = false;
+  bool linux = false;
+  bool windows = false;
+  bool macos = false;
+  bool web = kIsWeb;
+
+/*   OS() {
+    if (kIsWeb) web = true;
+    if (defaultTargetPlatform == TargetPlatform.android) android = true;
+    if (defaultTargetPlatform == TargetPlatform.iOS) ios = true;
+    if (defaultTargetPlatform == TargetPlatform.linux) linux = true;
+    if (defaultTargetPlatform == TargetPlatform.windows) windows = true;
+    if (defaultTargetPlatform == TargetPlatform.macOS) macos = true;
+  } */
+/*   mobile() {
+    if (kIsWeb) return false;
+    if (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS) {
+      return true;
+    }
+    return false;
+  } */
+
+  static bool isMobile([bool? forceValue]) {
+    if (forceValue != null) return forceValue;
     if (kIsWeb) return false;
     if (defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS) {
@@ -15,7 +40,8 @@ class OS {
     return false;
   }
 
-  static bool isWeb() {
+  static bool isWeb([bool? forceValue]) {
+    if (forceValue != null) return forceValue;
     if (kIsWeb) return true;
     return false;
   }
@@ -30,25 +56,29 @@ class OS {
     return false;
   }
 
-  static bool isAndroid() {
+  static bool isAndroid([bool? forceValue]) {
+    if (forceValue != null) return forceValue;
     if (kIsWeb) return false;
     if (defaultTargetPlatform == TargetPlatform.android) return true;
     return false;
   }
 
-  static bool isIOS() {
+  static bool isIOS([bool? forceValue]) {
+    if (forceValue != null) return forceValue;
     if (kIsWeb) return false;
     if (defaultTargetPlatform == TargetPlatform.iOS) return true;
     return false;
   }
 
-  static bool isLinux() {
+  static bool isLinux([bool? forceValue]) {
+    if (forceValue != null) return forceValue;
     if (kIsWeb) return false;
     if (defaultTargetPlatform == TargetPlatform.linux) return true;
     return false;
   }
 
-  static bool isWindows() {
+  static bool isWindows([bool? forceValue]) {
+    if (forceValue != null) return forceValue;
     if (kIsWeb) return false;
     if (defaultTargetPlatform == TargetPlatform.windows) return true;
     return false;
