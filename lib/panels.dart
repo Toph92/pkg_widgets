@@ -186,7 +186,7 @@ class _HMultiPanelsState extends State<HMultiPanels> {
               last._currentWidth =
                   constraints.maxWidth - totalWidth + last.width;
             } catch (e) {
-              print(e);
+              debugPrint(e.toString());
             }
 
             // on regarde si la liste a été modifiée

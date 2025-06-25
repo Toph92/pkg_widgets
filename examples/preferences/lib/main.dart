@@ -32,7 +32,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     await preferences.initialize();
     preferences[LocalPrefsEnum.toto] ??= "toto";
     preferences[LocalPrefsEnum.toto] = null;
-    print("toto=${preferences[LocalPrefsEnum.toto]}");
+    debugPrint("toto=${preferences[LocalPrefsEnum.toto]}");
     setState(() {});
   }
 

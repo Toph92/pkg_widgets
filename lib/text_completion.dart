@@ -355,7 +355,7 @@ class _TextCompletionState extends State<TextCompletion> {
                 decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withValues(alpha: 0.5),
                         offset: const Offset(elevation, elevation),
                         blurRadius: 6.0,
                       ),
@@ -407,25 +407,26 @@ class _TextCompletionState extends State<TextCompletion> {
                                       hintMessage = null;
                                       _refresh();
                                     },
-                                    leading: widget
-                                            .controller
-                                            .dataSourceFiltered![index]
-                                            .fuzzySearchResult
-                                        ? Icon(
-                                            Icons.help,
-                                            size: 24,
-                                            // les ravages de l'alcool :
-                                            color: Colors.blue.withOpacity(
-                                                (opa = ((widget.controller.dataSourceFiltered![
-                                                                        index])
-                                                                    .fuzzyScore ??
-                                                                1.0) *
-                                                            2) >
-                                                        1
-                                                    ? 1
-                                                    : opa),
-                                          )
-                                        : const SizedBox(),
+                                    leading:
+                                        widget
+                                                .controller
+                                                .dataSourceFiltered![index]
+                                                .fuzzySearchResult
+                                            ? Icon(
+                                                Icons.help,
+                                                size: 24,
+                                                // les ravages de l'alcool :
+                                                color: Colors.blue.withValues(
+                                                    alpha: (opa = ((widget.controller
+                                                                            .dataSourceFiltered![index])
+                                                                        .fuzzyScore ??
+                                                                    1.0) *
+                                                                2) >
+                                                            1
+                                                        ? 1
+                                                        : opa),
+                                              )
+                                            : const SizedBox(),
                                     title: widget
                                         .controller.dataSourceFiltered![index]
                                         .title(widget.controller)),

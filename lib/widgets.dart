@@ -52,7 +52,9 @@ class OS {
     if (kIsWeb) return false;
     if (defaultTargetPlatform == TargetPlatform.windows ||
         defaultTargetPlatform == TargetPlatform.linux ||
-        defaultTargetPlatform == TargetPlatform.macOS) return true;
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      return true;
+    }
     return false;
   }
 

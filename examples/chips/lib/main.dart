@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import "package:pkg_widgets/chipDate.dart";
-import "package:pkg_widgets/chipText.dart";
-import "package:pkg_widgets/chipCommon.dart";
+import "package:pkg_widgets/chip_date.dart";
+import "package:pkg_widgets/chip_text.dart";
+import "package:pkg_widgets/chip_common.dart";
 
 void main() {
   runApp(const MyApp());

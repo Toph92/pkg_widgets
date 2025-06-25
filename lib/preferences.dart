@@ -42,7 +42,7 @@ class Preferences<T extends Enum> with ChangeNotifier {
       return true;
     } catch (e) {
       sErrorMessage = 'Erreur lors de l\'initialisation des préférences : $e';
-      print(sErrorMessage);
+      debugPrint(sErrorMessage);
       return false;
     }
   }

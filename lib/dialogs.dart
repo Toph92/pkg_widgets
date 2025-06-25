@@ -53,10 +53,10 @@ class DialogCust<T> {
     await showGeneralDialog(
       barrierColor:
           dimissible == false && withBackgroundColor && type.color != null
-              ? type.color!.withOpacity(0.5)
+              ? type.color!.withAlpha((0.5 * 255).toInt())
               : dimissible == true && withBackgroundColor && type.color != null
-                  ? type.color!.withOpacity(0.1)
-                  : Colors.black.withOpacity(0.5),
+                  ? type.color!.withAlpha((0.1 * 255).toInt())
+                  : Colors.black.withAlpha((0.5 * 255).toInt()),
       barrierDismissible: dimissible!,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       context: context,

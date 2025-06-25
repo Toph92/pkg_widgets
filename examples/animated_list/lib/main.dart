@@ -80,7 +80,7 @@ class PersonListExampleState extends State<PersonListExample> {
       AnimListController<Person>(
     //sortBy: (a, b) => a.firstName.compareTo(b.firstName),
     sortBy: (a, b) {
-      print("a: ${a.firstName} b: ${b.firstName}");
+      debugPrint("a: ${a.firstName} b: ${b.firstName}");
       return a.firstName.compareTo(b.firstName);
     },
 

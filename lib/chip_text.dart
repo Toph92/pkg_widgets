@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
-import 'chipCommon.dart';
+import 'chip_common.dart';
 
 class ChipTextController extends ChangeNotifier {
   String? _textValue;

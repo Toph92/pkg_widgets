@@ -172,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: TitleBorderBox(
                       title: 'Clients',
-                      titleStyle: TitleBorderBox.none().titleStyle!.copyWith(
+                      titleStyle: TitleBorderBox.none().titleStyle.copyWith(
                         color: Colors.blue,
                         fontSize: 20,
                       ),
