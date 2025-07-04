@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
       onRequestUpdateDataSource: (arCriteria) async {
         await Future.delayed(const Duration(seconds: 1));
         // Liste de prénoms et noms réalistes
-        final List<Map<String, String>> realNames = [
+        return <Map<String, String>>[
           {'first': 'Sophie', 'last': 'MARTIN'},
           {'first': 'Lucas', 'last': 'DUBOIS'},
           {'first': 'Emma', 'last': 'LEFEVRE'},
@@ -105,8 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
           {'first': 'Fabrice', 'last': 'DEBUS'},
           {'first': 'Xavier', 'last': 'GIBOULOT'},
           {'first': 'Pascal', 'last': 'VEYRET'},
-        ];
-        return realNames
+        ]
             .map((e) => User(firstName: e['first'], lastName: e['last']!))
             .toList();
       },
