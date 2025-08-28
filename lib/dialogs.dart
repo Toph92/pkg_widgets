@@ -36,10 +36,8 @@ class DialogCust<T> {
     this.dimissible,
     this.icon,
   }) {
-    assert(this.message is String || this.message is Widget);
-    assert(this.altMessage is String ||
-        this.altMessage is Widget ||
-        this.altMessage == null);
+    assert(message is String || message is Widget);
+    assert(altMessage is String || altMessage is Widget || altMessage == null);
     if (tag?.trim() == '') tag = null;
   }
 

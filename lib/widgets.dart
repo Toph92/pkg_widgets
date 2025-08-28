@@ -13,23 +13,6 @@ class OS {
   bool macos = false;
   bool web = kIsWeb;
 
-/*   OS() {
-    if (kIsWeb) web = true;
-    if (defaultTargetPlatform == TargetPlatform.android) android = true;
-    if (defaultTargetPlatform == TargetPlatform.iOS) ios = true;
-    if (defaultTargetPlatform == TargetPlatform.linux) linux = true;
-    if (defaultTargetPlatform == TargetPlatform.windows) windows = true;
-    if (defaultTargetPlatform == TargetPlatform.macOS) macos = true;
-  } */
-/*   mobile() {
-    if (kIsWeb) return false;
-    if (defaultTargetPlatform == TargetPlatform.android ||
-        defaultTargetPlatform == TargetPlatform.iOS) {
-      return true;
-    }
-    return false;
-  } */
-
   static bool isMobile([bool? forceValue]) {
     if (forceValue != null) return forceValue;
     if (kIsWeb) return false;
